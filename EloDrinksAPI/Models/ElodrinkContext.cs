@@ -1,0 +1,181 @@
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
+
+namespace EloDrinksAPI.Models;
+
+public partial class ElodrinkContext : DbContext
+{
+    public ElodrinkContext()
+    {
+    }
+
+    public ElodrinkContext(DbContextOptions<ElodrinkContext> options)
+        : base(options)
+    {
+    }
+
+    public virtual DbSet<Item> Items { get; set; }
+
+    public virtual DbSet<Orcamento> Orcamentos { get; set; }
+
+    public virtual DbSet<OrcamentoHasItem> OrcamentoHasItems { get; set; }
+
+    public virtual DbSet<Pedido> Pedidos { get; set; }
+
+    public virtual DbSet<Usuario> Usuarios { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseMySql("server=localhost;port=3306;user=root;password=Vbsm1409#;database=elodrink", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.4.4-mysql"));
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder
+            .UseCollation("utf8mb4_0900_ai_ci")
+            .HasCharSet("utf8mb4");
+
+        modelBuilder.Entity<Item>(entity =>
+        {
+            entity.HasKey(e => e.IdItem).HasName("PRIMARY");
+
+            entity.ToTable("Item");
+
+            entity.Property(e => e.IdItem)
+                .ValueGeneratedNever()
+                .HasColumnName("idItem");
+            entity.Property(e => e.Descricao)
+                .HasColumnType("text")
+                .HasColumnName("descricao");
+            entity.Property(e => e.Nome)
+                .HasMaxLength(45)
+                .HasColumnName("nome");
+            entity.Property(e => e.Preco).HasColumnName("preco");
+            entity.Property(e => e.Tipo)
+                .HasColumnType("enum('0','1','2')")
+                .HasColumnName("tipo");
+        });
+
+        modelBuilder.Entity<Orcamento>(entity =>
+        {
+            entity.HasKey(e => new { e.IdOrcamento, e.UsuarioIdUsuario })
+                .HasName("PRIMARY")
+                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+
+            entity.ToTable("Orcamento");
+
+            entity.HasIndex(e => e.UsuarioIdUsuario, "fk_Orcamento_Usuario1");
+
+            entity.Property(e => e.IdOrcamento).HasColumnName("idOrcamento");
+            entity.Property(e => e.UsuarioIdUsuario).HasColumnName("Usuario_idUsuario");
+            entity.Property(e => e.Cep).HasColumnName("cep");
+            entity.Property(e => e.Data).HasColumnName("data");
+            entity.Property(e => e.HoraFim)
+                .HasColumnType("time")
+                .HasColumnName("horaFim");
+            entity.Property(e => e.HoraInicio)
+                .HasColumnType("time")
+                .HasColumnName("horaInicio");
+            entity.Property(e => e.Preco).HasColumnName("preco");
+            entity.Property(e => e.QtdPessoas).HasColumnName("qtdPessoas");
+            entity.Property(e => e.Status)
+                .HasColumnType("enum('0','1','2')")
+                .HasColumnName("status");
+            entity.Property(e => e.TipoEvento)
+                .HasColumnType("enum('0','1','2')")
+                .HasColumnName("tipoEvento");
+
+            entity.HasOne(d => d.UsuarioIdUsuarioNavigation).WithMany(p => p.Orcamentos)
+                .HasForeignKey(d => d.UsuarioIdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_Orcamento_Usuario1");
+        });
+
+        modelBuilder.Entity<OrcamentoHasItem>(entity =>
+        {
+            entity.HasKey(e => new { e.OrcamentoIdOrcamento, e.OrcamentoUsuarioIdUsuario, e.ItemIdItem })
+                .HasName("PRIMARY")
+                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
+
+            entity.ToTable("Orcamento_has_Item");
+
+            entity.HasIndex(e => e.ItemIdItem, "fk_Orcamento_has_Item_Item1_idx");
+
+            entity.HasIndex(e => new { e.OrcamentoIdOrcamento, e.OrcamentoUsuarioIdUsuario }, "fk_Orcamento_has_Item_Orcamento1_idx");
+
+            entity.Property(e => e.OrcamentoIdOrcamento).HasColumnName("Orcamento_idOrcamento");
+            entity.Property(e => e.OrcamentoUsuarioIdUsuario).HasColumnName("Orcamento_Usuario_idUsuario");
+            entity.Property(e => e.ItemIdItem).HasColumnName("Item_idItem");
+
+            entity.HasOne(d => d.ItemIdItemNavigation).WithMany(p => p.OrcamentoHasItems)
+                .HasForeignKey(d => d.ItemIdItem)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_Orcamento_has_Item_Item1");
+
+            entity.HasOne(d => d.Orcamento).WithMany(p => p.OrcamentoHasItems)
+                .HasForeignKey(d => new { d.OrcamentoIdOrcamento, d.OrcamentoUsuarioIdUsuario })
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_Orcamento_has_Item_Orcamento1");
+        });
+
+        modelBuilder.Entity<Pedido>(entity =>
+        {
+            entity.HasKey(e => new { e.IdPedido, e.OrcamentoIdOrcamento, e.OrcamentoUsuarioIdUsuario })
+                .HasName("PRIMARY")
+                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
+
+            entity.ToTable("Pedido");
+
+            entity.HasIndex(e => new { e.OrcamentoIdOrcamento, e.OrcamentoUsuarioIdUsuario }, "fk_Pedido_Orcamento1_idx");
+
+            entity.Property(e => e.IdPedido).HasColumnName("idPedido");
+            entity.Property(e => e.OrcamentoIdOrcamento).HasColumnName("Orcamento_idOrcamento");
+            entity.Property(e => e.OrcamentoUsuarioIdUsuario).HasColumnName("Orcamento_Usuario_idUsuario");
+            entity.Property(e => e.DataCriacao).HasColumnName("dataCriacao");
+            entity.Property(e => e.Status)
+                .HasColumnType("enum('0','1','2')")
+                .HasColumnName("status");
+            entity.Property(e => e.Total).HasColumnName("total");
+
+            entity.HasOne(d => d.Orcamento).WithMany(p => p.Pedidos)
+                .HasForeignKey(d => new { d.OrcamentoIdOrcamento, d.OrcamentoUsuarioIdUsuario })
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_Pedido_Orcamento1");
+        });
+
+        modelBuilder.Entity<Usuario>(entity =>
+        {
+            entity.HasKey(e => e.IdUsuario).HasName("PRIMARY");
+
+            entity.ToTable("Usuario");
+
+            entity.Property(e => e.IdUsuario)
+                .ValueGeneratedNever()
+                .HasColumnName("idUsuario");
+            entity.Property(e => e.DataCadastro).HasColumnName("dataCadastro");
+            entity.Property(e => e.Email)
+                .HasMaxLength(45)
+                .HasColumnName("email");
+            entity.Property(e => e.Nome)
+                .HasMaxLength(45)
+                .HasColumnName("nome");
+            entity.Property(e => e.Senha)
+                .HasMaxLength(262)
+                .HasColumnName("senha");
+            entity.Property(e => e.Sobrenome)
+                .HasMaxLength(45)
+                .HasColumnName("sobrenome");
+            entity.Property(e => e.Telefone)
+                .HasMaxLength(45)
+                .HasColumnName("telefone");
+            entity.Property(e => e.Tipo)
+                .HasColumnType("enum('0','1')")
+                .HasColumnName("tipo");
+        });
+
+        OnModelCreatingPartial(modelBuilder);
+    }
+
+    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+}
