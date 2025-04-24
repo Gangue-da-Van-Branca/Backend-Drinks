@@ -3,8 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+DotNetEnv.Env.Load();
+
 // Lê a connection string
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
+
+Console.WriteLine("CONN: " + Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection"));
 
 // Adiciona o DbContext com MySQL
 builder.Services.AddDbContext<ElodrinkContext>(options =>

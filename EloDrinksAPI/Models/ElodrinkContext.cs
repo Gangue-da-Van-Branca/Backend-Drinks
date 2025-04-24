@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
 
@@ -11,10 +12,7 @@ public partial class ElodrinkContext : DbContext
     {
     }
 
-    public ElodrinkContext(DbContextOptions<ElodrinkContext> options)
-        : base(options)
-    {
-    }
+    public ElodrinkContext(DbContextOptions<ElodrinkContext> options) : base(options) { }
 
     public virtual DbSet<Item> Items { get; set; }
 
@@ -27,8 +25,9 @@ public partial class ElodrinkContext : DbContext
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseMySql("server=localhost;port=3306;user=root;password=Vbsm1409#;database=elodrink", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.4.4-mysql"));
-
+    {
+        
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
