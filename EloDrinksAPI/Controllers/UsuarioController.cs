@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace EloDrinksAPI.Controllers
 {
     [Route("[controller]")]
-    public class UsuarioController : Controller
+    public class UsuarioController : ControllerBase
     {
         private readonly ElodrinkContext _context;
 
