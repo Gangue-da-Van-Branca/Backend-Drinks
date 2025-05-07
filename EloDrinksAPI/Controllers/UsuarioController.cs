@@ -1,3 +1,4 @@
+using EloDrinksAPI.DTOs.usuario;
 using EloDrinksAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -5,6 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EloDrinksAPI.Controllers
 {
+    [ApiController]
     [Route("[controller]")]
     public class UsuarioController : ControllerBase
     {
@@ -15,86 +17,106 @@ namespace EloDrinksAPI.Controllers
             _context = context;
         }
 
-        // GET: api/Usuario
+        // GET: /Usuario
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
+        public async Task<ActionResult<IEnumerable<UsuarioResponseDto>>> GetUsuarios()
         {
-            return await _context.Usuarios.ToListAsync();
+            try
+            {
+                var usuarios = await _context.Usuarios.ToListAsync();
+                return Ok(usuarios.Select(UsuarioMapper.ToDTO));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno ao buscar usuários: {ex.Message}");
+            }
         }
 
-        // GET: api/Usuario/id
+        // GET: /Usuario/id
         [HttpGet("{id}")]
-        public async Task<ActionResult<Usuario>> GetUsuario(int id)
+        public async Task<ActionResult<UsuarioResponseDto>> GetUsuario(int id)
         {
-            var usuario = await _context.Usuarios.FindAsync(id);
-
-            if (usuario == null)
+            try
             {
-                return NotFound();
-            }
+                var usuario = await _context.Usuarios.FindAsync(id);
+                if (usuario == null)
+                    return NotFound("Usuário não encontrado");
 
-            return usuario;
+                return Ok(UsuarioMapper.ToDTO(usuario));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno ao buscar usuário: {ex.Message}");
+            }
         }
 
         // POST: api/Usuario
         [HttpPost]
-        public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
+        public async Task<ActionResult<UsuarioResponseDto>> PostUsuario([FromBody] CreateUsuarioDto dto)
         {
-            _context.Usuarios.Add(usuario);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetUsuario), new { id = usuario.IdUsuario }, usuario);
-        }
-
-        // PUT: api/Usuario/id
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuario(int id, Usuario usuario)
-        {
-            if (id != usuario.IdUsuario)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(usuario).State = EntityState.Modified;
-
             try
             {
+                var usuario = UsuarioMapper.ToEntity(dto);
+
+                usuario.DataCadastro = DateOnly.FromDateTime(DateTime.Today);
+
+                _context.Usuarios.Add(usuario);
                 await _context.SaveChangesAsync();
+
+                var usuarioResponse = UsuarioMapper.ToDTO(usuario);
+                return CreatedAtAction(nameof(GetUsuario), new { id = usuario.IdUsuario }, usuarioResponse);
+            }
+            catch (DbUpdateException ex)
+            {
+                var inner = ex.InnerException?.Message;
+                return StatusCode(500, $"Erro ao criar usuário: {ex.Message} - Inner: {inner}");
+            }
+
+        }
+
+        // PUT: /Usuario/id
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutUsuario(int id, [FromBody] UpdateUsuarioDto dto)
+        {
+            try
+            {
+                var usuario = await _context.Usuarios.FindAsync(id);
+                if (usuario == null)
+                    return NotFound("Usuário não encontrado");
+
+                UsuarioMapper.ApplyUpdate(dto, usuario);
+
+                await _context.SaveChangesAsync();
+                return NoContent();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UsuarioExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return StatusCode(409, "Conflito de atualização no banco de dados.");
             }
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao atualizar usuário: {ex.Message}");
+            }
         }
 
-        private bool UsuarioExists(int id)
-        {
-            return _context.Usuarios.Any(e => e.IdUsuario == id);
-        }
-
-        // DELETE: api/Usuario/id
+        // DELETE: /Usuario/id
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(int id)
         {
-            var usuario = await _context.Usuarios.FindAsync(id);
-            if (usuario == null)
+            try
             {
-                return NotFound();
+                var usuario = await _context.Usuarios.FindAsync(id);
+                if (usuario == null)
+                    return NotFound("Usuário não encontrado.");
+
+                _context.Usuarios.Remove(usuario);
+                await _context.SaveChangesAsync();
+                return NoContent();
             }
-
-            _context.Usuarios.Remove(usuario);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao deletar usuário: {ex.Message}");
+            }
         }
     }
 }

@@ -150,9 +150,12 @@ public partial class ElodrinkContext : DbContext
 
             entity.ToTable("Usuario");
 
+<<<<<<< Updated upstream
             entity.Property(e => e.IdUsuario)
                 .ValueGeneratedNever()
                 .HasColumnName("idUsuario");
+=======
+>>>>>>> Stashed changes
             entity.Property(e => e.DataCadastro).HasColumnName("dataCadastro");
             entity.Property(e => e.Email)
                 .HasMaxLength(45)
