@@ -48,11 +48,9 @@ public IActionResult Login([FromBody] LoginModel login)
         return Unauthorized("Credenciais inválidas.");
 
     // Verificar se a chave JWT está configurada
-    var jwtKey = _config["Jwt:Key"];
+    var jwtKey = Environment.GetEnvironmentVariable("JWT__KEY");
     if (string.IsNullOrEmpty(jwtKey))
-    {
         throw new InvalidOperationException("A chave JWT não foi configurada.");
-    }
 
     var key = Encoding.ASCII.GetBytes(jwtKey);
 
