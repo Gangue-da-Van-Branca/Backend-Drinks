@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EloDrinksAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EloDrinksAPI.Controllers;
 
@@ -16,6 +17,7 @@ public class OrcamentoController : ControllerBase
     }
 
     // GET: api/Orcamento
+    [Authorize(Roles = "admin")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Orcamento>>> GetOrcamentos()
     {
@@ -27,6 +29,7 @@ public class OrcamentoController : ControllerBase
     }
 
     // GET: api/Orcamento/5
+    [Authorize(Roles = "admin")]
     [HttpGet("{id}")]
     public async Task<ActionResult<Orcamento>> GetOrcamento(int id)
     {
@@ -45,6 +48,7 @@ public class OrcamentoController : ControllerBase
     }
 
     // POST: api/Orcamento
+    [Authorize(Roles = "admin")]
     [HttpPost]
     public async Task<ActionResult<Orcamento>> PostOrcamento(Orcamento orcamento)
     {
@@ -55,6 +59,7 @@ public class OrcamentoController : ControllerBase
     }
 
     // PUT: api/Orcamento/5
+    [Authorize(Roles = "admin")]
     [HttpPut("{id}")]
     public async Task<IActionResult> PutOrcamento(int id, Orcamento orcamento)
     {
@@ -85,6 +90,7 @@ public class OrcamentoController : ControllerBase
     }
 
     // DELETE: api/Orcamento/5
+    [Authorize(Roles = "admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteOrcamento(int id)
     {
