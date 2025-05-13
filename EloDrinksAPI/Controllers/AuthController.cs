@@ -54,6 +54,9 @@ public IActionResult Login([FromBody] LoginModel login)
 
     var key = Encoding.ASCII.GetBytes(jwtKey);
 
+    // USAR ENQNT O 'TIPO' DO BANCO NAO FOR ENUM
+    string role = user.Tipo == "1" ? "admin" : "user";
+
     var tokenHandler = new JwtSecurityTokenHandler();
     var tokenDescriptor = new SecurityTokenDescriptor
     {
@@ -61,7 +64,7 @@ public IActionResult Login([FromBody] LoginModel login)
         {
             new Claim(ClaimTypes.NameIdentifier, user.IdUsuario.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Tipo)
+            new Claim(ClaimTypes.Role, role) // role convertida vem pra ca
         }),
         Expires = DateTime.UtcNow.AddHours(2),
         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
