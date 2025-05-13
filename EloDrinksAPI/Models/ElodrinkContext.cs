@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
@@ -147,6 +147,9 @@ public partial class ElodrinkContext : DbContext
             entity.HasKey(e => e.IdUsuario).HasName("PRIMARY");
 
             entity.ToTable("Usuario");
+
+            entity.Property(e => e.IdUsuario)
+                .ValueGeneratedNever()
 
             entity.Property(e => e.IdUsuario)
                 .ValueGeneratedNever()

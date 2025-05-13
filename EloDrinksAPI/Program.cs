@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using System.Text;
 using EloDrinksAPI.Models;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+ controller-usuario
+// Configura o JsonSerializer para ignorar ciclos de referência (solução temporária, não será a solução final)
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 
 var jwtKey = Environment.GetEnvironmentVariable("Jwt__Key") ?? "chave-padrao";
 var key = Encoding.ASCII.GetBytes(jwtKey);
