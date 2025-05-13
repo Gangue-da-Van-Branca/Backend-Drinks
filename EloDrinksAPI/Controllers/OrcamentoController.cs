@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using EloDrinksAPI.DTOs.orcamento;
 using EloDrinksAPI.Mappers;
 using EloDrinksAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EloDrinksAPI.Controllers;
 
@@ -17,7 +18,8 @@ public class OrcamentoController : ControllerBase
         _context = context;
     }
 
-    // GET: /Orcamento
+    // GET: api/Orcamento
+    [Authorize(Roles = "admin")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OrcamentoResponseDto>>> GetOrcamentos()
     {
@@ -34,8 +36,9 @@ public class OrcamentoController : ControllerBase
             return StatusCode(500, $"Erro ao buscar orçamentos: {ex.Message}");
         }
     }
-
-    // GET: /Orcamento/5
+    
+    // GET: api/Orcamento/5
+    [Authorize(Roles = "admin")]
     [HttpGet("{id}")]
     public async Task<ActionResult<OrcamentoResponseDto>> GetOrcamento(int id)
     {
@@ -56,7 +59,8 @@ public class OrcamentoController : ControllerBase
         }
     }
 
-    // POST: /Orcamento
+    // POST: api/Orcamento
+    [Authorize(Roles = "admin")]
     [HttpPost]
     public async Task<ActionResult<OrcamentoResponseDto>> PostOrcamento(CreateOrcamentoDto dto)
     {
@@ -82,7 +86,8 @@ public class OrcamentoController : ControllerBase
         }
     }
 
-    // PUT: /Orcamento/5
+    // PUT: api/Orcamento/5
+    [Authorize(Roles = "admin")]
     [HttpPut("{id}")]
     public async Task<IActionResult> PutOrcamento(int id, UpdateOrcamentoDto dto)
     {
@@ -105,7 +110,8 @@ public class OrcamentoController : ControllerBase
         }
     }
 
-    // DELETE: /Orcamento/5
+    // DELETE: api/Orcamento/5
+    [Authorize(Roles = "admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteOrcamento(int id)
     {
