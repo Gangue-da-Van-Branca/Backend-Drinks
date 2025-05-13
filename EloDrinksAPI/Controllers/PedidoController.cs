@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using EloDrinksAPI.DTOs.pedido;
 using EloDrinksAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,99 +16,125 @@ namespace EloDrinksAPI.Controllers
             _context = context;
         }
 
-        // GET: api/Pedido
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pedido>>> GetPedidos()
+        public async Task<ActionResult<IEnumerable<PedidoResponseDto>>> GetPedidos()
         {
-            return await _context.Pedidos.ToListAsync();
-        }
-
-        // GET: api/Pedido/id
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Pedido>> GetPedido(int id)
-        {
-            var pedido = await _context.Pedidos.FindAsync(id);
-
-            if (pedido == null)
-            {
-                return NotFound();
-            }
-
-            return pedido;
-        }
-
-        // POST: api/Pedido
-        [HttpPost]
-        public async Task<ActionResult<Pedido>> PostPedido(Pedido pedido)
-        {
-            _context.Pedidos.Add(pedido);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetPedido), new { id = pedido.IdPedido }, pedido);
-        }
-
-        // PUT: api/Pedido/id
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPedido(int id, Pedido pedido)
-        {
-            if (id != pedido.IdPedido)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(pedido).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                var pedidos = await _context.Pedidos.ToListAsync();
+                return pedidos.Select(PedidoMapper.ToDTO).ToList();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!PedidoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return StatusCode(500, $"Erro ao buscar pedidos: {ex.Message}");
             }
-
-            return NoContent();
         }
 
-        // DELETE: api/Pedido/id
+        [HttpGet("{id}")]
+        public async Task<ActionResult<PedidoResponseDto>> GetPedido(int id)
+        {
+            try
+            {
+                var pedido = await _context.Pedidos.FindAsync(id);
+                if (pedido == null)
+                    return NotFound("Pedido não encontrado.");
+
+                return PedidoMapper.ToDTO(pedido);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao buscar pedido: {ex.Message}");
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<PedidoResponseDto>> PostPedido([FromBody] CreatePedidoDto dto)
+        {
+            try
+            {
+                var pedido = PedidoMapper.ToEntity(dto);
+                _context.Pedidos.Add(pedido);
+                await _context.SaveChangesAsync();
+
+                var response = PedidoMapper.ToDTO(pedido);
+                return CreatedAtAction(nameof(GetPedido), new { id = pedido.IdPedido }, response);
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, $"Erro ao criar pedido no banco de dados: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro inesperado ao criar pedido: {ex.Message}");
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutPedido(int id, [FromBody] UpdatePedidoDto dto)
+        {
+            try
+            {
+                var pedido = await _context.Pedidos.FindAsync(id);
+                if (pedido == null)
+                    return NotFound("Pedido não encontrado para atualização.");
+
+                PedidoMapper.ApplyUpdate(dto, pedido);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, $"Erro ao atualizar pedido no banco de dados: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro inesperado ao atualizar pedido: {ex.Message}");
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePedido(int id)
         {
-            var pedido = await _context.Pedidos.FindAsync(id);
-            if (pedido == null)
+            try
             {
-                return NotFound();
+                var pedido = await _context.Pedidos.FindAsync(id);
+                if (pedido == null)
+                    return NotFound("Pedido não encontrado para exclusão.");
+
+                _context.Pedidos.Remove(pedido);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
             }
-
-            _context.Pedidos.Remove(pedido);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, $"Erro ao excluir pedido no banco de dados: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro inesperado ao excluir pedido: {ex.Message}");
+            }
         }
-        private bool PedidoExists(int id)
-        {
-            return _context.Pedidos.Any(e => e.IdPedido == id);
-        }
 
-        // GET: api/Pedido/usuario/id
         [HttpGet("usuario/{id}")]
-        public async Task<ActionResult<IEnumerable<Pedido>>> GetPedidosByUsuario(int id)
+        public async Task<ActionResult<IEnumerable<PedidoResponseDto>>> GetPedidosByUsuario(int id)
         {
-            var pedidos = await _context.Pedidos.Where(p => p.OrcamentoUsuarioIdUsuario == id).ToListAsync();
-
-            if (pedidos == null || !pedidos.Any())
+            try
             {
-                return NotFound();
-            }
+                var pedidos = await _context.Pedidos
+                    .Where(p => p.OrcamentoUsuarioIdUsuario == id)
+                    .ToListAsync();
 
-            return pedidos;
+                if (pedidos == null || !pedidos.Any())
+                    return NotFound("Nenhum pedido encontrado para o usuário informado.");
+
+                return pedidos.Select(PedidoMapper.ToDTO).ToList();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao buscar pedidos por usuário: {ex.Message}");
+            }
         }
     }
 }

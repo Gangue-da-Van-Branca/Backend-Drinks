@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using EloDrinksAPI.DTOs.orcamento;
+using EloDrinksAPI.Mappers;
 using EloDrinksAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 
@@ -19,74 +21,93 @@ public class OrcamentoController : ControllerBase
     // GET: api/Orcamento
     [Authorize(Roles = "admin")]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Orcamento>>> GetOrcamentos()
+    public async Task<ActionResult<IEnumerable<OrcamentoResponseDto>>> GetOrcamentos()
     {
-        return await _context.Orcamentos
-            .Include(o => o.UsuarioIdUsuarioNavigation)
-            .Include(o => o.OrcamentoHasItems)
-            .Include(o => o.Pedidos)
-            .ToListAsync();
-    }
+        try
+        {
+            var orcamentos = await _context.Orcamentos
+                .Include(o => o.UsuarioIdUsuarioNavigation)
+                .ToListAsync();
 
+            return orcamentos.Select(o => OrcamentoMapper.ToDTO(o)).ToList();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro ao buscar orçamentos: {ex.Message}");
+        }
+    }
+    
     // GET: api/Orcamento/5
     [Authorize(Roles = "admin")]
     [HttpGet("{id}")]
-    public async Task<ActionResult<Orcamento>> GetOrcamento(int id)
+    public async Task<ActionResult<OrcamentoResponseDto>> GetOrcamento(int id)
     {
-        var orcamento = await _context.Orcamentos
-            .Include(o => o.UsuarioIdUsuarioNavigation)
-            .Include(o => o.OrcamentoHasItems)
-            .Include(o => o.Pedidos)
-            .FirstOrDefaultAsync(o => o.IdOrcamento == id);
-
-        if (orcamento == null)
+        try
         {
-            return NotFound();
-        }
+            var orcamento = await _context.Orcamentos
+                .Include(o => o.UsuarioIdUsuarioNavigation)
+                .FirstOrDefaultAsync(o => o.IdOrcamento == id);
 
-        return orcamento;
+            if (orcamento == null)
+                return NotFound();
+
+            return OrcamentoMapper.ToDTO(orcamento);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro ao buscar orçamento: {ex.Message}");
+        }
     }
 
     // POST: api/Orcamento
     [Authorize(Roles = "admin")]
     [HttpPost]
-    public async Task<ActionResult<Orcamento>> PostOrcamento(Orcamento orcamento)
+    public async Task<ActionResult<OrcamentoResponseDto>> PostOrcamento(CreateOrcamentoDto dto)
     {
-        _context.Orcamentos.Add(orcamento);
-        await _context.SaveChangesAsync();
+        try
+        {
+            var usuarioExiste = await _context.Usuarios.AnyAsync(u => u.IdUsuario == dto.UsuarioIdUsuario);
+            if (!usuarioExiste)
+                return BadRequest("Usuário não encontrado.");
 
-        return CreatedAtAction(nameof(GetOrcamento), new { id = orcamento.IdOrcamento }, orcamento);
+            var entity = OrcamentoMapper.ToEntity(dto);
+            _context.Orcamentos.Add(entity);
+            await _context.SaveChangesAsync();
+
+            var orcamentoCompleto = await _context.Orcamentos
+                .Include(o => o.UsuarioIdUsuarioNavigation)
+                .FirstOrDefaultAsync(o => o.IdOrcamento == entity.IdOrcamento);
+
+            return CreatedAtAction(nameof(GetOrcamento), new { id = entity.IdOrcamento }, OrcamentoMapper.ToDTO(orcamentoCompleto!));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro ao criar orçamento: {ex.Message}");
+        }
     }
 
     // PUT: api/Orcamento/5
     [Authorize(Roles = "admin")]
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutOrcamento(int id, Orcamento orcamento)
+    public async Task<IActionResult> PutOrcamento(int id, UpdateOrcamentoDto dto)
     {
-        if (id != orcamento.IdOrcamento)
-        {
-            return BadRequest();
-        }
-
-        _context.Entry(orcamento).State = EntityState.Modified;
-
         try
         {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!OrcamentoExists(id))
-            {
+            var orcamento = await _context.Orcamentos.FindAsync(id);
+            if (orcamento == null)
                 return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
 
-        return NoContent();
+            OrcamentoMapper.ApplyUpdate(dto, orcamento);
+            _context.Entry(orcamento).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro ao atualizar orçamento: {ex.Message}");
+        }
     }
 
     // DELETE: api/Orcamento/5
@@ -94,20 +115,20 @@ public class OrcamentoController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteOrcamento(int id)
     {
-        var orcamento = await _context.Orcamentos.FindAsync(id);
-        if (orcamento == null)
+        try
         {
-            return NotFound();
+            var orcamento = await _context.Orcamentos.FindAsync(id);
+            if (orcamento == null)
+                return NotFound();
+
+            _context.Orcamentos.Remove(orcamento);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
-
-        _context.Orcamentos.Remove(orcamento);
-        await _context.SaveChangesAsync();
-
-        return NoContent();
-    }
-
-    private bool OrcamentoExists(int id)
-    {
-        return _context.Orcamentos.Any(e => e.IdOrcamento == id);
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro ao deletar orçamento: {ex.Message}");
+        }
     }
 }
