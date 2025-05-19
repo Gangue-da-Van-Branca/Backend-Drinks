@@ -26,7 +26,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
- controller-usuario
 // Configura o JsonSerializer para ignorar ciclos de referência (solução temporária, não será a solução final)
 builder.Services.AddControllers().AddJsonOptions(options =>
 {

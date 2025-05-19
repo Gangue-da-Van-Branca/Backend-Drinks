@@ -26,7 +26,7 @@ public partial class ElodrinkContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        
+
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -149,7 +149,7 @@ public partial class ElodrinkContext : DbContext
             entity.ToTable("Usuario");
 
             entity.Property(e => e.IdUsuario)
-                .ValueGeneratedNever()
+                .ValueGeneratedNever();
 
             entity.Property(e => e.IdUsuario)
                 .ValueGeneratedNever()
