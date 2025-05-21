@@ -33,6 +33,20 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
+// to review
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            // se a requisição for bloqueada provavelmente é aqui
+            policy.WithOrigins("http://localhost:3000") // chutei a porta, so vai aceitar req dela
+                  .AllowAnyHeader() // permite qqr tipo de requisição (GET, POST etc)
+                  .AllowAnyMethod() // ^
+                  .AllowCredentials(); // se o token n for armazenado em cookies pode tirar
+        });
+});
+
 var jwtKey = Environment.GetEnvironmentVariable("Jwt__Key") ?? "chave-padrao";
 var key = Encoding.ASCII.GetBytes(jwtKey);
 
@@ -102,6 +116,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 
