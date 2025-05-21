@@ -22,4 +22,7 @@ public partial class Usuario
     public string Tipo { get; set; } = null!;
 
     public virtual ICollection<Orcamento> Orcamentos { get; set; } = new List<Orcamento>();
+
+    public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+
 }

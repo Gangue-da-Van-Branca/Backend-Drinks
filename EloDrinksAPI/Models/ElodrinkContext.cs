@@ -24,6 +24,8 @@ public partial class ElodrinkContext : DbContext
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
+    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
 
@@ -173,6 +175,22 @@ public partial class ElodrinkContext : DbContext
             entity.Property(e => e.Tipo)
                 .HasColumnType("enum('0','1')")
                 .HasColumnName("tipo");
+        });
+
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Token)
+                .HasMaxLength(256)
+                .IsRequired();
+            entity.Property(e => e.Expiration).IsRequired();
+            entity.Property(e => e.Created).IsRequired();
+
+            entity.HasOne(e => e.Usuario)
+                .WithMany(u => u.RefreshTokens)
+                .HasForeignKey(e => e.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_RefreshToken_Usuario");
         });
 
         OnModelCreatingPartial(modelBuilder);
