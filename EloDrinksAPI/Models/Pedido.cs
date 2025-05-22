@@ -5,7 +5,7 @@ namespace EloDrinksAPI.Models;
 
 public partial class Pedido
 {
-    public int IdPedido { get; set; }
+    public long IdPedido { get; set; }
 
     public float Total { get; set; }
 
@@ -13,9 +13,9 @@ public partial class Pedido
 
     public DateOnly DataCriacao { get; set; }
 
-    public int OrcamentoIdOrcamento { get; set; }
+    public long OrcamentoIdOrcamento { get; set; }
 
-    public int OrcamentoUsuarioIdUsuario { get; set; }
+    public long OrcamentoUsuarioIdUsuario { get; set; }
 
     public virtual Orcamento Orcamento { get; set; } = null!;
 }

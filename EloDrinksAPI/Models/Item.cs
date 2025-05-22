@@ -5,7 +5,7 @@ namespace EloDrinksAPI.Models;
 
 public partial class Item
 {
-    public int IdItem { get; set; }
+    public long IdItem { get; set; }
 
     public string Nome { get; set; } = null!;
 

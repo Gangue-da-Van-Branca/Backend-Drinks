@@ -20,6 +20,21 @@ public class AuthController : ControllerBase
     private readonly ElodrinkContext _context;
     private readonly IConfiguration _config;
 
+    public static long GerarIdNumerico(int quantidadeDigitos)
+{
+
+    var random = new Random();
+    int min = (int)Math.Pow(10, quantidadeDigitos - 1);
+    int max = (int)Math.Pow(10, quantidadeDigitos) - 1;
+
+    int a = 101;
+    int b = random.Next(min, max);
+
+    long newNumber = Convert.ToInt64(string.Format("{0}{1}", a, b));
+
+    return newNumber;
+}
+
     public AuthController(ElodrinkContext context, IConfiguration config)
     {
         _context = context;
@@ -31,6 +46,9 @@ public class AuthController : ControllerBase
     {
         if (_context.Usuarios.Any(u => u.Email == usuario.Email))
             return BadRequest("Usuário já existe.");
+
+        //Gera o id do usuário
+        usuario.IdUsuario = GerarIdNumerico(15);
 
         usuario.Senha = BCrypt.Net.BCrypt.HashPassword(usuario.Senha);
         usuario.DataCadastro = DateOnly.FromDateTime(DateTime.UtcNow);

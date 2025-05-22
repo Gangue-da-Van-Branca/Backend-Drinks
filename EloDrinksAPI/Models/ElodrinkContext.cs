@@ -1,6 +1,5 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
 
@@ -12,7 +11,10 @@ public partial class ElodrinkContext : DbContext
     {
     }
 
-    public ElodrinkContext(DbContextOptions<ElodrinkContext> options) : base(options) { }
+    public ElodrinkContext(DbContextOptions<ElodrinkContext> options)
+        : base(options)
+    {
+    }
 
     public virtual DbSet<Item> Items { get; set; }
 
@@ -25,9 +27,9 @@ public partial class ElodrinkContext : DbContext
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseMySql("server=127.0.0.1;port=3306;user=root;password=FantasmaReal;database=elodrink", Microsoft.EntityFrameworkCore.ServerVersion.Parse("9.2.0-mysql"));
 
-    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -38,7 +40,7 @@ public partial class ElodrinkContext : DbContext
         {
             entity.HasKey(e => e.IdItem).HasName("PRIMARY");
 
-            entity.ToTable("Item");
+            entity.ToTable("item");
 
             entity.Property(e => e.IdItem)
                 .ValueGeneratedNever()
@@ -61,7 +63,7 @@ public partial class ElodrinkContext : DbContext
                 .HasName("PRIMARY")
                 .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
-            entity.ToTable("Orcamento");
+            entity.ToTable("orcamento");
 
             entity.HasIndex(e => e.UsuarioIdUsuario, "fk_Orcamento_Usuario1");
 
@@ -96,7 +98,7 @@ public partial class ElodrinkContext : DbContext
                 .HasName("PRIMARY")
                 .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
-            entity.ToTable("Orcamento_has_Item");
+            entity.ToTable("orcamento_has_item");
 
             entity.HasIndex(e => e.ItemIdItem, "fk_Orcamento_has_Item_Item1_idx");
 
@@ -123,7 +125,7 @@ public partial class ElodrinkContext : DbContext
                 .HasName("PRIMARY")
                 .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
-            entity.ToTable("Pedido");
+            entity.ToTable("pedido");
 
             entity.HasIndex(e => new { e.OrcamentoIdOrcamento, e.OrcamentoUsuarioIdUsuario }, "fk_Pedido_Orcamento1_idx");
 
@@ -146,10 +148,7 @@ public partial class ElodrinkContext : DbContext
         {
             entity.HasKey(e => e.IdUsuario).HasName("PRIMARY");
 
-            entity.ToTable("Usuario");
-
-            entity.Property(e => e.IdUsuario)
-                .ValueGeneratedNever();
+            entity.ToTable("usuario");
 
             entity.Property(e => e.IdUsuario)
                 .ValueGeneratedNever()

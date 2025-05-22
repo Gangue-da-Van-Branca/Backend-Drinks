@@ -7,7 +7,7 @@ namespace EloDrinksAPI.DTOs.orcamento
 {
     public class OrcamentoResponseDto
     {
-        public int IdOrcamento { get; set; }
+        public long IdOrcamento { get; set; }
 
         public DateOnly Data { get; set; }
 
@@ -25,7 +25,7 @@ namespace EloDrinksAPI.DTOs.orcamento
 
         public string TipoEvento { get; set; } = null!;
 
-        public int UsuarioIdUsuario { get; set; }
+        public long UsuarioIdUsuario { get; set; }
 
         public string? NomeUsuario { get; set; } // opcional
     }
