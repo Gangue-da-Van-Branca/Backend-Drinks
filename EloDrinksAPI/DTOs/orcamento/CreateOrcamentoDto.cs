@@ -29,6 +29,6 @@ namespace EloDrinksAPI.DTOs.orcamento
         public string TipoEvento { get; set; } = null!;
 
         [Required]
-        public long UsuarioIdUsuario { get; set; }
+        public string UsuarioIdUsuario { get; set; }
     }
 }

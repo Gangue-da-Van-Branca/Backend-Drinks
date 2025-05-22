@@ -43,7 +43,7 @@ public partial class ElodrinkContext : DbContext
             entity.ToTable("item");
 
             entity.Property(e => e.IdItem)
-                .ValueGeneratedNever()
+                .HasMaxLength(45)
                 .HasColumnName("idItem");
             entity.Property(e => e.Descricao)
                 .HasColumnType("text")
@@ -67,8 +67,12 @@ public partial class ElodrinkContext : DbContext
 
             entity.HasIndex(e => e.UsuarioIdUsuario, "fk_Orcamento_Usuario1");
 
-            entity.Property(e => e.IdOrcamento).HasColumnName("idOrcamento");
-            entity.Property(e => e.UsuarioIdUsuario).HasColumnName("Usuario_idUsuario");
+            entity.Property(e => e.IdOrcamento)
+                .HasMaxLength(45)
+                .HasColumnName("idOrcamento");
+            entity.Property(e => e.UsuarioIdUsuario)
+                .HasMaxLength(45)
+                .HasColumnName("Usuario_idUsuario");
             entity.Property(e => e.Cep).HasColumnName("cep");
             entity.Property(e => e.Data).HasColumnName("data");
             entity.Property(e => e.HoraFim)
@@ -104,9 +108,15 @@ public partial class ElodrinkContext : DbContext
 
             entity.HasIndex(e => new { e.OrcamentoIdOrcamento, e.OrcamentoUsuarioIdUsuario }, "fk_Orcamento_has_Item_Orcamento1_idx");
 
-            entity.Property(e => e.OrcamentoIdOrcamento).HasColumnName("Orcamento_idOrcamento");
-            entity.Property(e => e.OrcamentoUsuarioIdUsuario).HasColumnName("Orcamento_Usuario_idUsuario");
-            entity.Property(e => e.ItemIdItem).HasColumnName("Item_idItem");
+            entity.Property(e => e.OrcamentoIdOrcamento)
+                .HasMaxLength(45)
+                .HasColumnName("Orcamento_idOrcamento");
+            entity.Property(e => e.OrcamentoUsuarioIdUsuario)
+                .HasMaxLength(45)
+                .HasColumnName("Orcamento_Usuario_idUsuario");
+            entity.Property(e => e.ItemIdItem)
+                .HasMaxLength(45)
+                .HasColumnName("Item_idItem");
 
             entity.HasOne(d => d.ItemIdItemNavigation).WithMany(p => p.OrcamentoHasItems)
                 .HasForeignKey(d => d.ItemIdItem)
@@ -129,9 +139,15 @@ public partial class ElodrinkContext : DbContext
 
             entity.HasIndex(e => new { e.OrcamentoIdOrcamento, e.OrcamentoUsuarioIdUsuario }, "fk_Pedido_Orcamento1_idx");
 
-            entity.Property(e => e.IdPedido).HasColumnName("idPedido");
-            entity.Property(e => e.OrcamentoIdOrcamento).HasColumnName("Orcamento_idOrcamento");
-            entity.Property(e => e.OrcamentoUsuarioIdUsuario).HasColumnName("Orcamento_Usuario_idUsuario");
+            entity.Property(e => e.IdPedido)
+                .HasMaxLength(45)
+                .HasColumnName("idPedido");
+            entity.Property(e => e.OrcamentoIdOrcamento)
+                .HasMaxLength(45)
+                .HasColumnName("Orcamento_idOrcamento");
+            entity.Property(e => e.OrcamentoUsuarioIdUsuario)
+                .HasMaxLength(45)
+                .HasColumnName("Orcamento_Usuario_idUsuario");
             entity.Property(e => e.DataCriacao).HasColumnName("dataCriacao");
             entity.Property(e => e.Status)
                 .HasColumnType("enum('0','1','2')")
@@ -151,7 +167,7 @@ public partial class ElodrinkContext : DbContext
             entity.ToTable("usuario");
 
             entity.Property(e => e.IdUsuario)
-                .ValueGeneratedNever()
+                .HasMaxLength(45)
                 .HasColumnName("idUsuario");
             entity.Property(e => e.DataCadastro).HasColumnName("dataCadastro");
             entity.Property(e => e.Email)

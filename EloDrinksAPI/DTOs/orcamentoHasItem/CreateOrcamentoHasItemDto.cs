@@ -2,9 +2,9 @@ namespace EloDrinksAPI.DTOs.orcamentoHasItem
 {
     public class CreateOrcamentoHasItemDto
     {
-        public long OrcamentoIdOrcamento { get; set; }
-        public long OrcamentoUsuarioIdUsuario { get; set; }
-        public long ItemIdItem { get; set; }
+        public string OrcamentoIdOrcamento { get; set; }
+        public string OrcamentoUsuarioIdUsuario { get; set; }
+        public string ItemIdItem { get; set; }
         public int Quantidade { get; set; }
     }
 

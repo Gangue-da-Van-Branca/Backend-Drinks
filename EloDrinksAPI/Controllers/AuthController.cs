@@ -21,20 +21,14 @@ public class AuthController : ControllerBase
     private readonly ElodrinkContext _context;
     private readonly IConfiguration _config;
 
-    public static long GerarIdNumerico(int quantidadeDigitos)
-{
+    public static string GerarIdAlfanumerico(int tamanho){
 
-    var random = new Random();
-    int min = (int)Math.Pow(10, quantidadeDigitos - 1);
-    int max = (int)Math.Pow(10, quantidadeDigitos) - 1;
+        const string caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var random = new Random();
+        return new string(Enumerable.Repeat(caracteres, tamanho)
+            .Select(s => s[random.Next(s.Length)]).ToArray());
+    }
 
-    int a = 101;
-    int b = random.Next(min, max);
-
-    long newNumber = Convert.ToInt64(string.Format("{0}{1}", a, b));
-
-    return newNumber;
-}
 
     public AuthController(ElodrinkContext context, IConfiguration config)
     {
@@ -52,6 +46,7 @@ public async Task<IActionResult> Register([FromBody] CreateUsuarioDto usuarioDTO
 
     var usuario = new Usuario
     {
+        IdUsuario = "u1" + GerarIdAlfanumerico(16),
         Nome = usuarioDTO.Nome,
         Sobrenome = usuarioDTO.Sobrenome,
         Email = usuarioDTO.Email,

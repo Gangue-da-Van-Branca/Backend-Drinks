@@ -12,10 +12,10 @@ namespace EloDrinksAPI.DTOs.pedido
         public string Status { get; set; } = null!;
 
         [Required]
-        public long OrcamentoIdOrcamento { get; set; }
+        public string OrcamentoIdOrcamento { get; set; }
 
         [Required]
-        public long OrcamentoUsuarioIdUsuario { get; set; }
+        public string OrcamentoUsuarioIdUsuario { get; set; }
     }
 
 }

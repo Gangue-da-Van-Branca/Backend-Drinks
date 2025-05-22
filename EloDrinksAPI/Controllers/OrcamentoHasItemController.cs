@@ -36,7 +36,7 @@ public class OrcamentoHasItemController : ControllerBase
     }
 
     [HttpGet("{orcamentoId}/{itemId}")]
-    public async Task<ActionResult<OrcamentoHasItemResponseDto>> Get(int orcamentoId, int itemId)
+    public async Task<ActionResult<OrcamentoHasItemResponseDto>> Get(string orcamentoId, string itemId)
     {
         try
         {
@@ -58,7 +58,7 @@ public class OrcamentoHasItemController : ControllerBase
     }
 
     [HttpGet("Orcamento/{orcamentoId}")]
-    public async Task<ActionResult<IEnumerable<OrcamentoHasItemResponseDto>>> GetByOrcamento(int orcamentoId)
+    public async Task<ActionResult<IEnumerable<OrcamentoHasItemResponseDto>>> GetByOrcamento(string orcamentoId)
     {
         try
         {
@@ -120,7 +120,7 @@ public class OrcamentoHasItemController : ControllerBase
     }
 
     [HttpPut("{orcamentoId}/{itemId}")]
-    public async Task<IActionResult> Put(int orcamentoId, int itemId, UpdateOrcamentoHasItemDto dto)
+    public async Task<IActionResult> Put(string orcamentoId, string itemId, UpdateOrcamentoHasItemDto dto)
     {
         try
         {
@@ -145,7 +145,7 @@ public class OrcamentoHasItemController : ControllerBase
     }
 
     [HttpDelete("{orcamentoId}/{itemId}")]
-    public async Task<IActionResult> Delete(int orcamentoId, int itemId)
+    public async Task<IActionResult> Delete(string orcamentoId, string itemId)
     {
         try
         {

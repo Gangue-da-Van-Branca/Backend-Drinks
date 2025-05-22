@@ -76,7 +76,7 @@ namespace EloDrinksAPI.Controllers
 
         // PUT: /Usuario/id
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuario(int id, [FromBody] UpdateUsuarioDto dto)
+        public async Task<IActionResult> PutUsuario(string id, [FromBody] UpdateUsuarioDto dto)
         {
             try
             {
@@ -101,7 +101,7 @@ namespace EloDrinksAPI.Controllers
 
         // DELETE: /Usuario/id
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUsuario(int id)
+        public async Task<IActionResult> DeleteUsuario(string id)
         {
             try
             {

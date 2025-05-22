@@ -40,7 +40,7 @@ public class OrcamentoController : ControllerBase
     // GET: api/Orcamento/5
     [Authorize(Roles = "admin")]
     [HttpGet("{id}")]
-    public async Task<ActionResult<OrcamentoResponseDto>> GetOrcamento(int id)
+    public async Task<ActionResult<OrcamentoResponseDto>> GetOrcamento(string id)
     {
         try
         {
@@ -89,7 +89,7 @@ public class OrcamentoController : ControllerBase
     // PUT: api/Orcamento/5
     [Authorize(Roles = "admin")]
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutOrcamento(int id, UpdateOrcamentoDto dto)
+    public async Task<IActionResult> PutOrcamento(string id, UpdateOrcamentoDto dto)
     {
         try
         {
@@ -113,7 +113,7 @@ public class OrcamentoController : ControllerBase
     // DELETE: api/Orcamento/5
     [Authorize(Roles = "admin")]
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteOrcamento(int id)
+    public async Task<IActionResult> DeleteOrcamento(string id)
     {
         try
         {

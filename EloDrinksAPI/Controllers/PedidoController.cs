@@ -31,7 +31,7 @@ namespace EloDrinksAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PedidoResponseDto>> GetPedido(int id)
+        public async Task<ActionResult<PedidoResponseDto>> GetPedido(string id)
         {
             try
             {
@@ -70,7 +70,7 @@ namespace EloDrinksAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPedido(int id, [FromBody] UpdatePedidoDto dto)
+        public async Task<IActionResult> PutPedido(string id, [FromBody] UpdatePedidoDto dto)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace EloDrinksAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePedido(int id)
+        public async Task<IActionResult> DeletePedido(string id)
         {
             try
             {
@@ -118,7 +118,7 @@ namespace EloDrinksAPI.Controllers
         }
 
         [HttpGet("usuario/{id}")]
-        public async Task<ActionResult<IEnumerable<PedidoResponseDto>>> GetPedidosByUsuario(int id)
+        public async Task<ActionResult<IEnumerable<PedidoResponseDto>>> GetPedidosByUsuario(string id)
         {
             try
             {
