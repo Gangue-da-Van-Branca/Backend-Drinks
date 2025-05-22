@@ -10,10 +10,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using BCrypt.Net;
+using EloDrinksAPI.DTOs.usuario;
 
 namespace EloDrinksAPI.Controllers
 {
-[Route("api/[controller]")]
+[Route("[controller]")]
 [ApiController]
 public class AuthController : ControllerBase
 {
@@ -41,24 +42,33 @@ public class AuthController : ControllerBase
         _config = config;
     }
 
-    [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] Usuario usuario)
+[HttpPost("register")]
+public async Task<IActionResult> Register([FromBody] CreateUsuarioDto usuarioDTO)
+{
+    if (_context.Usuarios.Any(u => u.Email == usuarioDTO.Email))
+        return BadRequest("Usuário já existe.");
+
+    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(usuarioDTO.Senha);
+
+    var usuario = new Usuario
     {
-        if (_context.Usuarios.Any(u => u.Email == usuario.Email))
-            return BadRequest("Usuário já existe.");
+        Nome = usuarioDTO.Nome,
+        Sobrenome = usuarioDTO.Sobrenome,
+        Email = usuarioDTO.Email,
+        Telefone = usuarioDTO.Telefone,
+        Senha = hashedPassword,
+        Tipo = usuarioDTO.Tipo,
+        DataCadastro = DateOnly.FromDateTime(DateTime.UtcNow)
+    };
 
-        //Gera o id do usuário
-        usuario.IdUsuario = GerarIdNumerico(15);
+    _context.Usuarios.Add(usuario);
+    await _context.SaveChangesAsync();
 
-        usuario.Senha = BCrypt.Net.BCrypt.HashPassword(usuario.Senha);
-        usuario.DataCadastro = DateOnly.FromDateTime(DateTime.UtcNow);
-        _context.Usuarios.Add(usuario);
-        await _context.SaveChangesAsync();
+    return Ok("Usuário registrado com sucesso.");
+}
 
-        return Ok("Usuário registrado com sucesso.");
-    }
 
-    [HttpPost("login")]
+[HttpPost("login")]
 public IActionResult Login([FromBody] LoginModel login)
 {
     var user = _context.Usuarios.SingleOrDefault(x => x.Email == login.Email);
