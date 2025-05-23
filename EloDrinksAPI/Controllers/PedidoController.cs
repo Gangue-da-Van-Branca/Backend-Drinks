@@ -2,6 +2,7 @@ using EloDrinksAPI.DTOs.pedido;
 using EloDrinksAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using EloDrinksAPI.Services;
 
 namespace EloDrinksAPI.Controllers
 {
@@ -53,6 +54,7 @@ namespace EloDrinksAPI.Controllers
             try
             {
                 var pedido = PedidoMapper.ToEntity(dto);
+                pedido.IdPedido = "p1" + GerarIdService.GerarIdAlfanumerico(16);
                 _context.Pedidos.Add(pedido);
                 await _context.SaveChangesAsync();
 

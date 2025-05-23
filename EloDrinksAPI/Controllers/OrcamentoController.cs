@@ -4,6 +4,7 @@ using EloDrinksAPI.DTOs.orcamento;
 using EloDrinksAPI.Mappers;
 using EloDrinksAPI.Models;
 using Microsoft.AspNetCore.Authorization;
+using EloDrinksAPI.Services;
 
 namespace EloDrinksAPI.Controllers;
 
@@ -71,6 +72,7 @@ public class OrcamentoController : ControllerBase
                 return BadRequest("Usuário não encontrado.");
 
             var entity = OrcamentoMapper.ToEntity(dto);
+            entity.IdOrcamento = "o1" + GerarIdService.GerarIdAlfanumerico(16);
             _context.Orcamentos.Add(entity);
             await _context.SaveChangesAsync();
 

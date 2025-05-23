@@ -6,6 +6,7 @@ using EloDrinksAPI.Mappers;
 using EloDrinksAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using EloDrinksAPI.Services;
 
 namespace EloDrinksAPI.Controllers;
 
@@ -57,6 +58,7 @@ public class ItemController : ControllerBase
         try
         {
             var entity = ItemMapper.ToEntity(dto);
+            entity.IdItem = "i1" + GerarIdService.GerarIdAlfanumerico(16);
             _context.Items.Add(entity);
             await _context.SaveChangesAsync();
 
