@@ -32,7 +32,7 @@ public static class PedidoMapper
     {
         if (dto.Total != null) pedido.Total = dto.Total.Value;
         if (!string.IsNullOrEmpty(dto.Status)) pedido.Status = dto.Status;
-        if (dto.OrcamentoIdOrcamento != null) pedido.OrcamentoIdOrcamento = dto.OrcamentoIdOrcamento.Value;
-        if (dto.OrcamentoUsuarioIdUsuario != null) pedido.OrcamentoUsuarioIdUsuario = dto.OrcamentoUsuarioIdUsuario.Value;
+        if (dto.OrcamentoIdOrcamento != null) pedido.OrcamentoIdOrcamento = dto.OrcamentoIdOrcamento;
+        if (dto.OrcamentoUsuarioIdUsuario != null) pedido.OrcamentoUsuarioIdUsuario = dto.OrcamentoUsuarioIdUsuario;
     }
 }

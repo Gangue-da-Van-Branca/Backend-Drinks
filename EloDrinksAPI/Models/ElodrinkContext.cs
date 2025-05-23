@@ -1,6 +1,5 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
 
@@ -12,7 +11,10 @@ public partial class ElodrinkContext : DbContext
     {
     }
 
-    public ElodrinkContext(DbContextOptions<ElodrinkContext> options) : base(options) { }
+    public ElodrinkContext(DbContextOptions<ElodrinkContext> options)
+        : base(options)
+    {
+    }
 
     public virtual DbSet<Item> Items { get; set; }
 
@@ -25,9 +27,9 @@ public partial class ElodrinkContext : DbContext
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseMySql("server=127.0.0.1;port=3306;user=root;password=FantasmaReal;database=elodrink", Microsoft.EntityFrameworkCore.ServerVersion.Parse("9.2.0-mysql"));
 
-    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -38,10 +40,10 @@ public partial class ElodrinkContext : DbContext
         {
             entity.HasKey(e => e.IdItem).HasName("PRIMARY");
 
-            entity.ToTable("Item");
+            entity.ToTable("item");
 
             entity.Property(e => e.IdItem)
-                .ValueGeneratedNever()
+                .HasMaxLength(45)
                 .HasColumnName("idItem");
             entity.Property(e => e.Descricao)
                 .HasColumnType("text")
@@ -61,12 +63,16 @@ public partial class ElodrinkContext : DbContext
                 .HasName("PRIMARY")
                 .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
-            entity.ToTable("Orcamento");
+            entity.ToTable("orcamento");
 
             entity.HasIndex(e => e.UsuarioIdUsuario, "fk_Orcamento_Usuario1");
 
-            entity.Property(e => e.IdOrcamento).HasColumnName("idOrcamento");
-            entity.Property(e => e.UsuarioIdUsuario).HasColumnName("Usuario_idUsuario");
+            entity.Property(e => e.IdOrcamento)
+                .HasMaxLength(45)
+                .HasColumnName("idOrcamento");
+            entity.Property(e => e.UsuarioIdUsuario)
+                .HasMaxLength(45)
+                .HasColumnName("Usuario_idUsuario");
             entity.Property(e => e.Cep).HasColumnName("cep");
             entity.Property(e => e.Data).HasColumnName("data");
             entity.Property(e => e.HoraFim)
@@ -96,15 +102,21 @@ public partial class ElodrinkContext : DbContext
                 .HasName("PRIMARY")
                 .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
-            entity.ToTable("Orcamento_has_Item");
+            entity.ToTable("orcamento_has_item");
 
             entity.HasIndex(e => e.ItemIdItem, "fk_Orcamento_has_Item_Item1_idx");
 
             entity.HasIndex(e => new { e.OrcamentoIdOrcamento, e.OrcamentoUsuarioIdUsuario }, "fk_Orcamento_has_Item_Orcamento1_idx");
 
-            entity.Property(e => e.OrcamentoIdOrcamento).HasColumnName("Orcamento_idOrcamento");
-            entity.Property(e => e.OrcamentoUsuarioIdUsuario).HasColumnName("Orcamento_Usuario_idUsuario");
-            entity.Property(e => e.ItemIdItem).HasColumnName("Item_idItem");
+            entity.Property(e => e.OrcamentoIdOrcamento)
+                .HasMaxLength(45)
+                .HasColumnName("Orcamento_idOrcamento");
+            entity.Property(e => e.OrcamentoUsuarioIdUsuario)
+                .HasMaxLength(45)
+                .HasColumnName("Orcamento_Usuario_idUsuario");
+            entity.Property(e => e.ItemIdItem)
+                .HasMaxLength(45)
+                .HasColumnName("Item_idItem");
 
             entity.HasOne(d => d.ItemIdItemNavigation).WithMany(p => p.OrcamentoHasItems)
                 .HasForeignKey(d => d.ItemIdItem)
@@ -123,13 +135,19 @@ public partial class ElodrinkContext : DbContext
                 .HasName("PRIMARY")
                 .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
-            entity.ToTable("Pedido");
+            entity.ToTable("pedido");
 
             entity.HasIndex(e => new { e.OrcamentoIdOrcamento, e.OrcamentoUsuarioIdUsuario }, "fk_Pedido_Orcamento1_idx");
 
-            entity.Property(e => e.IdPedido).HasColumnName("idPedido");
-            entity.Property(e => e.OrcamentoIdOrcamento).HasColumnName("Orcamento_idOrcamento");
-            entity.Property(e => e.OrcamentoUsuarioIdUsuario).HasColumnName("Orcamento_Usuario_idUsuario");
+            entity.Property(e => e.IdPedido)
+                .HasMaxLength(45)
+                .HasColumnName("idPedido");
+            entity.Property(e => e.OrcamentoIdOrcamento)
+                .HasMaxLength(45)
+                .HasColumnName("Orcamento_idOrcamento");
+            entity.Property(e => e.OrcamentoUsuarioIdUsuario)
+                .HasMaxLength(45)
+                .HasColumnName("Orcamento_Usuario_idUsuario");
             entity.Property(e => e.DataCriacao).HasColumnName("dataCriacao");
             entity.Property(e => e.Status)
                 .HasColumnType("enum('0','1','2')")
@@ -146,13 +164,10 @@ public partial class ElodrinkContext : DbContext
         {
             entity.HasKey(e => e.IdUsuario).HasName("PRIMARY");
 
-            entity.ToTable("Usuario");
+            entity.ToTable("usuario");
 
             entity.Property(e => e.IdUsuario)
-                .ValueGeneratedNever();
-
-            entity.Property(e => e.IdUsuario)
-                .ValueGeneratedNever()
+                .HasMaxLength(45)
                 .HasColumnName("idUsuario");
             entity.Property(e => e.DataCadastro).HasColumnName("dataCadastro");
             entity.Property(e => e.Email)

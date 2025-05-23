@@ -35,7 +35,7 @@ public class ItemController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ItemResponseDto>> GetItem(int id)
+    public async Task<ActionResult<ItemResponseDto>> GetItem(string id)
     {
         try
         {
@@ -69,7 +69,7 @@ public class ItemController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutItem(int id, UpdateItemDto dto)
+    public async Task<IActionResult> PutItem(string id, UpdateItemDto dto)
     {
         try
         {
@@ -97,7 +97,7 @@ public class ItemController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteItem(int id)
+    public async Task<IActionResult> DeleteItem(string id)
     {
         try
         {
@@ -116,5 +116,5 @@ public class ItemController : ControllerBase
         }
     }
 
-    private bool ItemExists(int id) => _context.Items.Any(e => e.IdItem == id);
+    private bool ItemExists(string id) => _context.Items.Any(e => e.IdItem == id);
 }

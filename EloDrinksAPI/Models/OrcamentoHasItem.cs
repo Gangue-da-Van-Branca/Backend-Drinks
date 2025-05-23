@@ -5,11 +5,11 @@ namespace EloDrinksAPI.Models;
 
 public partial class OrcamentoHasItem
 {
-    public int OrcamentoIdOrcamento { get; set; }
+    public string OrcamentoIdOrcamento { get; set; } = null!;
 
-    public int OrcamentoUsuarioIdUsuario { get; set; }
+    public string OrcamentoUsuarioIdUsuario { get; set; } = null!;
 
-    public int ItemIdItem { get; set; }
+    public string ItemIdItem { get; set; } = null!;
 
     public int Quantidade { get; set; }
 

@@ -2,7 +2,7 @@ namespace EloDrinksAPI.DTOs.usuario
 {
     public class UsuarioResponseDto
     {
-        public int IdUsuario { get; set; }
+        public string IdUsuario { get; set; } = null!;
         
         public string Nome { get; set; } = null!;
 

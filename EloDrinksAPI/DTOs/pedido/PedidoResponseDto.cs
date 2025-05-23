@@ -2,7 +2,7 @@ namespace EloDrinksAPI.DTOs.pedido
 {
     public class PedidoResponseDto
     {
-        public int IdPedido { get; set; }
+        public string IdPedido { get; set; } = null!;
 
         public float Total { get; set; }
 
@@ -10,9 +10,9 @@ namespace EloDrinksAPI.DTOs.pedido
 
         public DateOnly DataCriacao { get; set; }
 
-        public int OrcamentoIdOrcamento { get; set; }
+        public string OrcamentoIdOrcamento { get; set; } = null!;
 
-        public int OrcamentoUsuarioIdUsuario { get; set; }
+        public string OrcamentoUsuarioIdUsuario { get; set; } = null!;
     }
 
 }

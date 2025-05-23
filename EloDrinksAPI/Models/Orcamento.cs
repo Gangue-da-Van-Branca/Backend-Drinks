@@ -5,7 +5,7 @@ namespace EloDrinksAPI.Models;
 
 public partial class Orcamento
 {
-    public int IdOrcamento { get; set; }
+    public string IdOrcamento { get; set; } = null!;
 
     public DateOnly Data { get; set; }
 
@@ -23,7 +23,7 @@ public partial class Orcamento
 
     public string TipoEvento { get; set; } = null!;
 
-    public int UsuarioIdUsuario { get; set; }
+    public string UsuarioIdUsuario { get; set; } = null!;
 
     public virtual ICollection<OrcamentoHasItem> OrcamentoHasItems { get; set; } = new List<OrcamentoHasItem>();
 
