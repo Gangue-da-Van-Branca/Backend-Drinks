@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using BCrypt.Net;
 using EloDrinksAPI.DTOs.usuario;
+using EloDrinksAPI.Services;
 
 namespace EloDrinksAPI.Controllers
 {
@@ -20,15 +21,6 @@ public class AuthController : ControllerBase
 {
     private readonly ElodrinkContext _context;
     private readonly IConfiguration _config;
-
-    public static string GerarIdAlfanumerico(int tamanho){
-
-        const string caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        var random = new Random();
-        return new string(Enumerable.Repeat(caracteres, tamanho)
-            .Select(s => s[random.Next(s.Length)]).ToArray());
-    }
-
 
     public AuthController(ElodrinkContext context, IConfiguration config)
     {
@@ -46,7 +38,7 @@ public async Task<IActionResult> Register([FromBody] CreateUsuarioDto usuarioDTO
 
     var usuario = new Usuario
     {
-        IdUsuario = "u1" + GerarIdAlfanumerico(16),
+        IdUsuario = "u1" + GerarIdService.GerarIdAlfanumerico(16),
         Nome = usuarioDTO.Nome,
         Sobrenome = usuarioDTO.Sobrenome,
         Email = usuarioDTO.Email,
