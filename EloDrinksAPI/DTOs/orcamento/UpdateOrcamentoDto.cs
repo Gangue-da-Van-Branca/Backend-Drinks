@@ -1,35 +1,34 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EloDrinksAPI.DTOs.orcamento
 {
     public class UpdateOrcamentoDto
     {
-        [Required]
+        [Required(ErrorMessage = "A data é obrigatória.")]
         public DateOnly Data { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O CEP é obrigatório.")]
+        [Range(1000000, 99999999, ErrorMessage = "CEP inválido.")]
         public int Cep { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O horário de início é obrigatório.")]
         public TimeOnly HoraInicio { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O horário de término é obrigatório.")]
         public TimeOnly HoraFim { get; set; }
 
-        [Range(1, int.MaxValue)]
+        [Required(ErrorMessage = "A quantidade de pessoas é obrigatória.")]
+        [Range(1, int.MaxValue, ErrorMessage = "A quantidade de pessoas deve ser maior que zero.")]
         public int QtdPessoas { get; set; }
 
-        [Range(0.01, double.MaxValue)]
+        [Required(ErrorMessage = "O preço é obrigatório.")]
+        [Range(0, double.MaxValue, ErrorMessage = "O preço não pode ser negativo.")]
         public float Preco { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O status é obrigatório.")]
         public string Status { get; set; } = null!;
 
-        [Required]
+        [Required(ErrorMessage = "O tipo de evento é obrigatório.")]
         public string TipoEvento { get; set; } = null!;
     }
 }

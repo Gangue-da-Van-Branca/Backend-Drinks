@@ -25,6 +25,10 @@ public partial class Orcamento
 
     public string UsuarioIdUsuario { get; set; } = null!;
 
+    public string? Endereco { get; set; }
+
+    public string? DrinksSelecionados { get; set; }
+
     public virtual ICollection<OrcamentoHasItem> OrcamentoHasItems { get; set; } = new List<OrcamentoHasItem>();
 
     public virtual ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();

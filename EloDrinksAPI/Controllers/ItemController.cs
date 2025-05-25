@@ -52,23 +52,32 @@ public class ItemController : ControllerBase
         }
     }
 
-    [HttpPost]
-    public async Task<ActionResult<ItemResponseDto>> PostItem(CreateItemDto dto)
+    [HttpPost()]
+    public async Task<ActionResult<IEnumerable<ItemResponseDto>>> PostItensEmLote(List<CreateItemDto> dtos)
     {
         try
         {
-            var entity = ItemMapper.ToEntity(dto);
-            entity.IdItem = "i1" + GerarIdService.GerarIdAlfanumerico(16);
-            _context.Items.Add(entity);
+            var itensCriados = new List<Item>();
+
+            foreach (var dto in dtos)
+            {
+                var entity = ItemMapper.ToEntity(dto);
+                entity.IdItem = "i1" + GerarIdService.GerarIdAlfanumerico(16);
+                itensCriados.Add(entity);
+            }
+
+            _context.Items.AddRange(itensCriados);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetItem), new { id = entity.IdItem }, ItemMapper.ToDTO(entity));
+            var result = itensCriados.Select(ItemMapper.ToDTO).ToList();
+            return Ok(result);
         }
         catch
         {
-            return StatusCode(500, "Erro ao criar o item.");
+            return StatusCode(500, "Erro ao criar os itens em lote.");
         }
     }
+
 
     [HttpPut("{id}")]
     public async Task<IActionResult> PutItem(string id, UpdateItemDto dto)
