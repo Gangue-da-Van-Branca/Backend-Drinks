@@ -62,21 +62,7 @@ public class OrcamentoController : ControllerBase
         }
     }
 
-
-    [HttpPost()]
-    private string TratarCep(string rawCep)
-    {
-        if (string.IsNullOrWhiteSpace(rawCep))
-            throw new ArgumentException("CEP nao pode ser null");
-
-        string somenteNumeros = new string(rawCep.Where(char.IsDigit).ToArray());
-
-        if (somenteNumeros.Length != 8)
-            throw new ArgumentException("CEP deve ter 8 digitos");
-
-        return somenteNumeros;
-    }
-
+    [HttpPost("front-create")]
     public async Task<IActionResult> CriarOrcamentoViaFrontend([FromBody] OrcamentoFrontInputDto dto)
     {
         try
@@ -199,6 +185,20 @@ public class OrcamentoController : ControllerBase
 
     }
 
+
+    [HttpPost()]
+    private string TratarCep(string rawCep)
+    {
+        if (string.IsNullOrWhiteSpace(rawCep))
+            throw new ArgumentException("CEP nao pode ser null");
+
+        string somenteNumeros = new string(rawCep.Where(char.IsDigit).ToArray());
+
+        if (somenteNumeros.Length != 8)
+            throw new ArgumentException("CEP deve ter 8 digitos");
+
+        return somenteNumeros;
+    }
 
     // PUT: api/Orcamento/5
     //[Authorize(Roles = "admin")]
