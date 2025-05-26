@@ -9,6 +9,7 @@ namespace EloDrinksAPI.Mappers
         {
             return new Orcamento
             {
+                IdOrcamento = dto.IdOrcamento,
                 Data = dto.Data,
                 Cep = dto.Cep,
                 HoraInicio = dto.HoraInicio,
@@ -17,9 +18,12 @@ namespace EloDrinksAPI.Mappers
                 Preco = dto.Preco,
                 Status = dto.Status,
                 TipoEvento = dto.TipoEvento,
-                UsuarioIdUsuario = dto.UsuarioIdUsuario
+                UsuarioIdUsuario = dto.UsuarioIdUsuario,
+                Endereco = dto.Endereco,
+                DrinksSelecionados = dto.DrinksSelecionados
             };
         }
+
 
         public static void ApplyUpdate(UpdateOrcamentoDto dto, Orcamento entity)
         {
@@ -38,17 +42,101 @@ namespace EloDrinksAPI.Mappers
             return new OrcamentoResponseDto
             {
                 IdOrcamento = entity.IdOrcamento,
-                Data = entity.Data,
-                Cep = entity.Cep,
-                HoraInicio = entity.HoraInicio,
-                HoraFim = entity.HoraFim,
-                QtdPessoas = entity.QtdPessoas,
-                Preco = entity.Preco,
-                Status = entity.Status,
-                TipoEvento = entity.TipoEvento,
-                UsuarioIdUsuario = entity.UsuarioIdUsuario,
-                NomeUsuario = entity.UsuarioIdUsuarioNavigation?.Nome // se incluído no Include
+                IdUsuario = entity.UsuarioIdUsuario,
+                BaseFesta = new BaseFestaDto
+                {
+                    TipoFesta = entity.TipoEvento,
+                    DrinksSelecionados = entity.OrcamentoHasItems
+                        .Where(i => i.ItemIdItemNavigation.Tipo == "drink")
+                        .Select(i => new DrinkDto
+                        {
+                            Id = i.ItemIdItem,
+                            Nome = i.ItemIdItemNavigation.Nome,
+                            Descricao = i.ItemIdItemNavigation.Descricao
+                        }).ToList()
+                },
+                InfosContratante = new InfosContratanteDto
+                {
+                    Nome = entity.UsuarioIdUsuarioNavigation.Nome,
+                    Sobrenome = entity.UsuarioIdUsuarioNavigation.Sobrenome,
+                    Telefone = entity.UsuarioIdUsuarioNavigation.Telefone,
+                    Email = entity.UsuarioIdUsuarioNavigation.Email,
+                    Data = entity.Data.ToString("dd/MM/yyyy"),
+                    Endereco = entity.Endereco ?? "",
+                    HorarioInicio = entity.HoraInicio.ToString("HH:mm"),
+                    HorarioFinal = entity.HoraFim.ToString("HH:mm"),
+                    Cep = entity.Cep.ToString(),
+                    Convidados = entity.QtdPessoas.ToString()
+                },
+                Opcionais = new OpcionaisDto
+                {
+                    Shots = entity.OrcamentoHasItems
+                        .Where(i => i.ItemIdItemNavigation.Tipo == "shot")
+                        .ToDictionary(i => i.ItemIdItemNavigation.Nome, i => i.Quantidade),
+                    Extras = entity.OrcamentoHasItems
+                        .Where(i => i.ItemIdItemNavigation.Tipo == "extra")
+                        .ToDictionary(i => i.ItemIdItemNavigation.Nome, i => i.Quantidade),
+                    BaresAdicionais = entity.OrcamentoHasItems
+                        .Where(i => i.ItemIdItemNavigation.Tipo == "barAdicional")
+                        .Select(i => i.ItemIdItemNavigation.Nome)
+                        .ToList()
+                },
+
             };
         }
+
+        public static OrcamentoFrontInputDto ToFrontendDTO(Orcamento orcamento)
+        {
+            var drinks = orcamento.OrcamentoHasItems
+                .Where(i => i.ItemIdItemNavigation.Tipo == "drink")
+                .Select(i => new DrinkDto
+                {
+                    Id = i.ItemIdItem,
+                    Nome = i.ItemIdItemNavigation.Nome,
+                    Descricao = i.ItemIdItemNavigation.Descricao
+                }).ToList();
+
+            var shots = orcamento.OrcamentoHasItems
+                .Where(i => i.ItemIdItemNavigation.Tipo == "shot")
+                .ToDictionary(i => i.ItemIdItemNavigation.Nome, i => i.Quantidade);
+
+            var extras = orcamento.OrcamentoHasItems
+                .Where(i => i.ItemIdItemNavigation.Tipo == "extra")
+                .ToDictionary(i => i.ItemIdItemNavigation.Nome, i => i.Quantidade);
+
+            var bares = orcamento.OrcamentoHasItems
+                .Where(i => i.ItemIdItemNavigation.Tipo == "barAdicional")
+                .Select(i => i.ItemIdItemNavigation.Nome)
+                .ToList();
+
+            return new OrcamentoFrontInputDto
+            {
+                BaseFesta = new BaseFestaDto
+                {
+                    TipoFesta = orcamento.TipoEvento,
+                    DrinksSelecionados = drinks
+                },
+                InfosContratante = new InfosContratanteDto
+                {
+                    Nome = orcamento.UsuarioIdUsuarioNavigation.Nome,
+                    Sobrenome = orcamento.UsuarioIdUsuarioNavigation.Sobrenome,
+                    Telefone = orcamento.UsuarioIdUsuarioNavigation.Telefone,
+                    Email = orcamento.UsuarioIdUsuarioNavigation.Email,
+                    Data = orcamento.Data.ToString("dd/MM/yyyy"),
+                    Endereco = orcamento.Endereco ?? "",
+                    HorarioInicio = orcamento.HoraInicio.ToString("HH:mm"),
+                    HorarioFinal = orcamento.HoraFim.ToString("HH:mm"),
+                    Cep = orcamento.Cep.ToString(),
+                    Convidados = orcamento.QtdPessoas.ToString()
+                },
+                Opcionais = new OpcionaisDto
+                {
+                    Shots = shots,
+                    Extras = extras,
+                    BaresAdicionais = bares
+                }
+            };
+        }
+
     }
 }

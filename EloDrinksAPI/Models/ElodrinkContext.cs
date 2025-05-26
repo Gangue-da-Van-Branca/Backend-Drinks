@@ -51,7 +51,7 @@ public partial class ElodrinkContext : DbContext
                 .HasColumnName("nome");
             entity.Property(e => e.Preco).HasColumnName("preco");
             entity.Property(e => e.Tipo)
-                .HasColumnType("enum('0','1','2')")
+                .HasMaxLength(45)
                 .HasColumnName("tipo");
         });
 
@@ -73,6 +73,12 @@ public partial class ElodrinkContext : DbContext
                 .HasColumnName("Usuario_idUsuario");
             entity.Property(e => e.Cep).HasColumnName("cep");
             entity.Property(e => e.Data).HasColumnName("data");
+            entity.Property(e => e.DrinksSelecionados)
+                .HasColumnType("text")
+                .HasColumnName("drinksSelecionados");
+            entity.Property(e => e.Endereco)
+                .HasMaxLength(100)
+                .HasColumnName("endereco");
             entity.Property(e => e.HoraFim)
                 .HasColumnType("time")
                 .HasColumnName("horaFim");
@@ -82,10 +88,10 @@ public partial class ElodrinkContext : DbContext
             entity.Property(e => e.Preco).HasColumnName("preco");
             entity.Property(e => e.QtdPessoas).HasColumnName("qtdPessoas");
             entity.Property(e => e.Status)
-                .HasColumnType("enum('0','1','2')")
+                .HasMaxLength(45)
                 .HasColumnName("status");
             entity.Property(e => e.TipoEvento)
-                .HasColumnType("enum('0','1','2')")
+                .HasMaxLength(45)
                 .HasColumnName("tipoEvento");
 
             entity.HasOne(d => d.UsuarioIdUsuarioNavigation).WithMany(p => p.Orcamentos)
@@ -148,7 +154,7 @@ public partial class ElodrinkContext : DbContext
                 .HasColumnName("Orcamento_Usuario_idUsuario");
             entity.Property(e => e.DataCriacao).HasColumnName("dataCriacao");
             entity.Property(e => e.Status)
-                .HasColumnType("enum('0','1','2')")
+                .HasMaxLength(45)
                 .HasColumnName("status");
             entity.Property(e => e.Total).HasColumnName("total");
 
@@ -184,7 +190,7 @@ public partial class ElodrinkContext : DbContext
                 .HasMaxLength(45)
                 .HasColumnName("telefone");
             entity.Property(e => e.Tipo)
-                .HasColumnType("enum('0','1')")
+                .HasMaxLength(45)
                 .HasColumnName("tipo");
         });
 

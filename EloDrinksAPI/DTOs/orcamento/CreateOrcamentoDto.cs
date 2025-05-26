@@ -4,11 +4,13 @@ namespace EloDrinksAPI.DTOs.orcamento
 {
     public class CreateOrcamentoDto
     {
+        public string IdOrcamento { get; set; } = null!;
+
         [Required]
         public DateOnly Data { get; set; }
 
         [Required]
-        public int Cep { get; set; }
+        public string Cep { get; set; } = null!;
 
         [Required]
         public TimeOnly HoraInicio { get; set; }
@@ -29,6 +31,21 @@ namespace EloDrinksAPI.DTOs.orcamento
         public string TipoEvento { get; set; } = null!;
 
         [Required]
-        public string UsuarioIdUsuario { get; set; }
+        public string UsuarioIdUsuario { get; set; } = null!;
+
+        [Required]
+        public string Endereco { get; set; } = null!;
+
+        public string? DrinksSelecionados { get; set; } // opcional, usado para armazenar a lista como string
+
+        public List<OrcamentoItemDto>? Itens { get; set; } // drinks + opcionais
+
     }
+
+    public class OrcamentoItemDto
+    {
+        public string IdItem { get; set; } = null!;
+        public int Quantidade { get; set; }
+    }
+
 }
