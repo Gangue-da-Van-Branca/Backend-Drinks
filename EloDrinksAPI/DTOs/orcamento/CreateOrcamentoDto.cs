@@ -10,7 +10,7 @@ namespace EloDrinksAPI.DTOs.orcamento
         public DateOnly Data { get; set; }
 
         [Required]
-        public int Cep { get; set; }
+        public string Cep { get; set; } = null!;
 
         [Required]
         public TimeOnly HoraInicio { get; set; }
@@ -31,7 +31,7 @@ namespace EloDrinksAPI.DTOs.orcamento
         public string TipoEvento { get; set; } = null!;
 
         [Required]
-        public string UsuarioIdUsuario { get; set; }
+        public string UsuarioIdUsuario { get; set; } = null!;
 
         [Required]
         public string Endereco { get; set; } = null!;

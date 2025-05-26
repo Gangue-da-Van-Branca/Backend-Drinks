@@ -8,8 +8,7 @@ namespace EloDrinksAPI.DTOs.orcamento
         public DateOnly Data { get; set; }
 
         [Required(ErrorMessage = "O CEP é obrigatório.")]
-        [Range(1000000, 99999999, ErrorMessage = "CEP inválido.")]
-        public int Cep { get; set; }
+        public string Cep { get; set; } = null!;
 
         [Required(ErrorMessage = "O horário de início é obrigatório.")]
         public TimeOnly HoraInicio { get; set; }

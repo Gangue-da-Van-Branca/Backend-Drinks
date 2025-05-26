@@ -9,7 +9,7 @@ public partial class Orcamento
 
     public DateOnly Data { get; set; }
 
-    public int Cep { get; set; }
+    public string Cep { get; set; } = null!;
 
     public TimeOnly HoraInicio { get; set; }
 

@@ -64,6 +64,19 @@ public class OrcamentoController : ControllerBase
 
 
     [HttpPost()]
+    private string TratarCep(string rawCep)
+    {
+        if (string.IsNullOrWhiteSpace(rawCep))
+            throw new ArgumentException("CEP nao pode ser null");
+
+        string somenteNumeros = new string(rawCep.Where(char.IsDigit).ToArray());
+
+        if (somenteNumeros.Length != 8)
+            throw new ArgumentException("CEP deve ter 8 digitos");
+
+        return somenteNumeros;
+    }
+
     public async Task<IActionResult> CriarOrcamentoViaFrontend([FromBody] OrcamentoFrontInputDto dto)
     {
         try
@@ -80,7 +93,7 @@ public class OrcamentoController : ControllerBase
                 Data = DateOnly.Parse(dto.InfosContratante.Data),
                 HoraInicio = TimeOnly.Parse(dto.InfosContratante.HorarioInicio),
                 HoraFim = TimeOnly.Parse(dto.InfosContratante.HorarioFinal),
-                Cep = int.Parse(dto.InfosContratante.Cep),
+                Cep = TratarCep(dto.InfosContratante.Cep), // CEP string
                 QtdPessoas = int.Parse(dto.InfosContratante.Convidados),
                 Endereco = dto.InfosContratante.Endereco,
                 TipoEvento = dto.BaseFesta.TipoFesta,

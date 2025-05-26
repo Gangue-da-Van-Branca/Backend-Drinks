@@ -20,7 +20,7 @@ namespace EloDrinksAPI.DTOs.orcamento
 
     public class DrinkDto
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = null!;
         public string Nome { get; set; } = null!;
         public string Descricao { get; set; } = null!;
     }
