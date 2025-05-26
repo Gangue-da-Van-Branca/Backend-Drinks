@@ -34,7 +34,7 @@ namespace EloDrinksAPI.Controllers
 
         // GET: /Usuario/id
         [HttpGet("{id}")]
-        public async Task<ActionResult<UsuarioResponseDto>> GetUsuario(int id)
+        public async Task<ActionResult<UsuarioResponseDto>> GetUsuario(string id)
         {
             try
             {

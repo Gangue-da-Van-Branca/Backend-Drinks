@@ -9,7 +9,7 @@ public partial class Orcamento
 
     public DateOnly Data { get; set; }
 
-    public int Cep { get; set; }
+    public string Cep { get; set; } = null!;
 
     public TimeOnly HoraInicio { get; set; }
 
@@ -24,6 +24,10 @@ public partial class Orcamento
     public string TipoEvento { get; set; } = null!;
 
     public string UsuarioIdUsuario { get; set; } = null!;
+
+    public string? Endereco { get; set; }
+
+    public string? DrinksSelecionados { get; set; }
 
     public virtual ICollection<OrcamentoHasItem> OrcamentoHasItems { get; set; } = new List<OrcamentoHasItem>();
 
