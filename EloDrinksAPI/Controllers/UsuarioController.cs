@@ -87,7 +87,7 @@ namespace EloDrinksAPI.Controllers
                 UsuarioMapper.ApplyUpdate(dto, usuario);
 
                 await _context.SaveChangesAsync();
-                return NoContent();
+                return Ok("Usuário atualizado com sucesso.");
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -111,7 +111,7 @@ namespace EloDrinksAPI.Controllers
 
                 _context.Usuarios.Remove(usuario);
                 await _context.SaveChangesAsync();
-                return NoContent();
+                return Ok("Usuário deletado com sucesso.");
             }
             catch (Exception ex)
             {
