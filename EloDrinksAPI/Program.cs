@@ -45,7 +45,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             // se a requisição for bloqueada provavelmente é aqui
-            policy.WithOrigins("http://localhost:3000") // chutei a porta, so vai aceitar req dela
+            policy.WithOrigins("http://localhost:3000","https://frontend-drinks.vercel.app/")
                   .AllowAnyHeader() // permite qqr tipo de requisição (GET, POST etc)
                   .AllowAnyMethod() // ^
                   .AllowCredentials(); // se o token n for armazenado em cookies pode tirar
@@ -131,5 +131,9 @@ app.UseAuthorization();
 app.UseAuthorization();
 
 app.MapControllers();
+
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5001";
+
+app.Urls.Add($"http://*:{port}");
 
 app.Run();
