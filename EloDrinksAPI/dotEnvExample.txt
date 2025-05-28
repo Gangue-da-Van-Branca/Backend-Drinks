@@ -1,5 +1,5 @@
 Exemplo do .env que você tem que criar ai no seu projeto.
-Tudo que está "<>" deve ser substituido (incluindo menor maior) pel sua info correspondente
+Tudo que está "<>" deve ser substituido (incluindo menor maior) pelo sua info correspondente
 
 ----------------------------------------------------------------------
 
