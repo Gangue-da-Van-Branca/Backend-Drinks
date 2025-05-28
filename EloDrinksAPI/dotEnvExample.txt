@@ -1,0 +1,8 @@
+Exemplo do .env que você tem que criar ai no seu projeto.
+Tudo que está "<>" deve ser substituido (incluindo menor maior) pelo sua info correspondente
+
+----------------------------------------------------------------------
+
+ConnectionStrings__DefaultConnection=Server=<localhost ou qqr q seja sua conexao>;Database=<nome do bd local>;User Id=<teu user mysql>;Password=<tua senha mysql>;
+Jwt__Key=<chave que vai gerar os JWT>
+<pedir pro Victor o restante do .env (parte de email)>

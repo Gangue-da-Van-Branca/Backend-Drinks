@@ -1,0 +1,7 @@
+namespace EloDrinksAPI.DTOs.forgotPassword
+{
+    public class ForgotPasswordDto
+    {
+        public string Email { get; set; } = null!;
+    }
+}
