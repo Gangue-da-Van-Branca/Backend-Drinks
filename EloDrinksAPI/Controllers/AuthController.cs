@@ -36,7 +36,7 @@ namespace EloDrinksAPI.Controllers
         public async Task<IActionResult> Register([FromBody] CreateUsuarioDto usuarioDTO)
         {
             if (_context.Usuarios.Any(u => u.Email == usuarioDTO.Email))
-                return BadRequest("Usuário já existe.");
+                return BadRequest("Usuário já existe");
 
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(usuarioDTO.Senha);
 
@@ -55,7 +55,7 @@ namespace EloDrinksAPI.Controllers
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
 
-            return Ok("Usuário registrado com sucesso.");
+            return Ok("Usuário registrado com sucesso");
         }
 
 
@@ -64,12 +64,12 @@ namespace EloDrinksAPI.Controllers
         {
             var user = _context.Usuarios.SingleOrDefault(x => x.Email == login.Email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(login.Senha, user.Senha))
-                return Unauthorized("Credenciais inválidas.");
+                return Unauthorized("Credenciais inválidas");
 
             // verifica se a chave JWT está configurada
             var jwtKey = Environment.GetEnvironmentVariable("Jwt__Key");
             if (string.IsNullOrEmpty(jwtKey))
-                throw new InvalidOperationException("A chave JWT não foi configurada.");
+                throw new InvalidOperationException("A chave JWT não foi configurada");
 
             var key = Encoding.ASCII.GetBytes(jwtKey);
 
@@ -104,7 +104,7 @@ namespace EloDrinksAPI.Controllers
             var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == dto.Email);
 
             if (user == null)
-                return Ok("Se o e-mail estiver cadastrado, enviaremos instruções para redefinir a senha.");
+                return Ok("Se o e-mail estiver cadastrado, enviaremos instruções para redefinir a senha");
 
             var token = Guid.NewGuid().ToString(); // <= geracao do token
 
@@ -137,7 +137,20 @@ namespace EloDrinksAPI.Controllers
 
             await _emailService.SendEmailAsync(emailRequest);
 
-            return Ok("Se o e-mail estiver cadastrado, enviaremos instruções para redefinir a senha.");
+            return Ok("Se o e-mail estiver cadastrado, enviaremos instruções para redefinir a senha!");
+        }
+
+        // ve se o token ainda é valido antes de ter que digitar a senha
+        [HttpGet("validate-resetPassword-token")]
+        public async Task<IActionResult> ValidateResetToken([FromQuery] string token)
+        {
+            var tokenEntry = await _context.PasswordResetTokens
+                .FirstOrDefaultAsync(t => t.Token == token && t.Expiration > DateTime.UtcNow);
+
+            if (tokenEntry == null)
+                return BadRequest("Token inválido ou expirado");
+
+            return Ok("Token válido");
         }
 
         [HttpPost("reset-password")]
