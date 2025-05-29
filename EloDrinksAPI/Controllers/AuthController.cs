@@ -93,7 +93,7 @@ namespace EloDrinksAPI.Controllers
             return Ok(new
             {
                 token = tokenHandler.WriteToken(token),
-                role = role  // adiciona o tipo do usuário aqui
+                role
             });
         }
 
