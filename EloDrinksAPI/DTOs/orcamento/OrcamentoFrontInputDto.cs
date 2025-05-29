@@ -10,6 +10,7 @@ namespace EloDrinksAPI.DTOs.orcamento
         public BaseFestaDto BaseFesta { get; set; } = null!;
         public InfosContratanteDto InfosContratante { get; set; } = null!;
         public OpcionaisDto Opcionais { get; set; } = null!;
+        public float Preco { get; set; }
     }
 
     public class BaseFestaDto
