@@ -1,8 +1,54 @@
-Exemplo do .env que você tem que criar ai no seu projeto.
-Tudo que está "<>" deve ser substituido (incluindo menor maior) pelo sua info correspondente
+# Este é um arquivo de exemplo para as variáveis de ambiente.
+# Copie este arquivo para .env e substitua os valores pelos da sua configuração local.
+# NÃO adicione o arquivo .env ao controle de versão (git).
 
-----------------------------------------------------------------------
+# ===================================================================================================================================
+#                                                  CONFIGURAÇÕES DA APLICAÇÃO
+# ===================================================================================================================================
 
-ConnectionStrings__DefaultConnection=Server=<localhost ou qqr q seja sua conexao>;Database=<nome do bd local>;User Id=<teu user mysql>;Password=<tua senha mysql>;
-Jwt__Key=<chave que vai gerar os JWT>
-<pedir pro Victor o restante do .env (parte de email)>
+# String de conexão com o banco de dados (formato comum para .NET)
+# Substitua <servidor_do_banco_de_dados>, <nome_do_banco>, <usuario_do_banco> e <senha_do_banco>
+# Exemplo para MySQL rodando localmente:
+ConnectionStrings__DefaultConnection=Server=localhost;Database=EloDrink_dev;User Id=seu_usuario_mysql;Password=sua_senha_mysql_forte;
+
+# Chave secreta para geração e validação de JSON Web Tokens (JWT)
+# Deve ser uma string longa, aleatória e segura (pelo menos 32 caracteres).
+Jwt__Key=coloque_aqui_sua_chave_secreta_super_longa_e_segura_para_jwt
+
+# ===================================================================================================================================
+#                                                  CONFIGURAÇÕES DE E-MAIL
+# ===================================================================================================================================
+
+# Servidor SMTP para envio de e-mails
+EMAIL_SMTP_SERVER=smtp.gmail.com
+# Porta do servidor SMTP (587 é comum para TLS)
+EMAIL_PORT=587
+# Nome de usuário para autenticação no servidor SMTP
+EMAIL_USERNAME=seu_email@example.com
+# Senha para autenticação no servidor SMTP (para Gmail, pode ser uma "App Password")
+EMAIL_PASSWORD=sua_senha_de_email_ou_app_password
+# Nome que aparecerá como remetente nos e-mails enviados pela aplicação
+EMAIL_FROM_NAME="Drinks App"
+# Endereço de e-mail que aparecerá como remetente
+EMAIL_FROM_ADDRESS=naoresponda@example.com
+
+# ===================================================================================================================================
+#                                                  CONFIGURAÇÕES DO FRONTEND
+# ===================================================================================================================================
+
+# URL base da aplicação frontend (para links em e-mails, CORS, etc.)
+FRONTEND_URL=http://localhost:3000
+
+# ===================================================================================================================================
+#                               CONFIGURAÇÕES PARA O CONTAINER DO BANCO DE DADOS (Ex: Docker)
+#                     Estas variáveis são geralmente usadas para inicializar o serviço do banco de dados.
+# ===================================================================================================================================
+
+# Nome do banco de dados a ser criado/usado dentro do container
+DB_DATABASE=EloDrink_dev
+# Nome de usuário para o banco de dados (não root)
+DB_USER=elodrinks_app_user
+# Senha para o usuário DB_USER
+DB_PASSWORD=senha_forte_para_o_usuario_do_banco
+# Senha para o usuário root do MySQL no container (usada na primeira inicialização)
+DB_ROOT_PASSWORD=senha_super_forte_para_o_root_do_banco
