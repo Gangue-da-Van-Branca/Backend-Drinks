@@ -93,7 +93,8 @@ namespace EloDrinksAPI.Controllers
             return Ok(new
             {
                 token = tokenHandler.WriteToken(token),
-                role
+                role,
+                user.IdUsuario
             });
         }
 
