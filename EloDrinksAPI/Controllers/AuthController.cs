@@ -96,43 +96,66 @@ namespace EloDrinksAPI.Controllers
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
         {
-            var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == dto.Email);
+            try
+            {
+                // Tenta encontrar o usuário pelo e-mail fornecido.
+                var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == dto.Email);
 
-            if (user == null)
+                // Por segurança, a mesma mensagem é retornada existindo ou não o usuário.
+                // Isso evita que um atacante use este endpoint para descobrir quais e-mails estão cadastrados.
+                if (user == null)
+                    return Ok("Se o e-mail estiver cadastrado, enviaremos instruções para redefinir a senha.");
+
+                // Geração de um token único para a redefinição.
+                var token = Guid.NewGuid().ToString();
+
+                var resetToken = new PasswordResetToken
+                {
+                    Token = token,
+                    UserId = user.IdUsuario,
+                    Expiration = DateTime.UtcNow.AddMinutes(30) // Token expira em 30 minutos.
+                };
+
+                // Adiciona e salva o token no banco de dados.
+                _context.PasswordResetTokens.Add(resetToken);
+                await _context.SaveChangesAsync();
+
+                // Monta o link que será enviado ao usuário.
+                // TODO: Substituir "https://seudominio.com" pela URL do frontend quando estiver em produção.
+                var resetLink = $"https://seudominio.com/reset-password?token={token}";
+
+                // Prepara o corpo do e-mail.
+                var emailRequest = new EmailRequestDto
+                {
+                    To = user.Email,
+                    Subject = "Redefinição de Senha - EloDrinks",
+                    Body = $@"
+        <p>Olá {user.Nome},</p>
+        <p>Você solicitou uma redefinição de senha.</p>
+        <p>Clique no link abaixo para criar uma nova senha. O link expira em 30 minutos:</p>
+        <p><a href='{resetLink}'>Redefinir senha</a></p>
+        <p>Se você não solicitou isso, ignore este e-mail.</p>
+        <p>Atenciosamente,<br/>Equipe EloDrinks</p>"
+                };
+
+                // Envia o e-mail para o usuário.
+                await _emailService.SendEmailAsync(emailRequest);
+
+                // Retorna a mesma mensagem de sucesso para proteger a privacidade dos usuários.
                 return Ok("Se o e-mail estiver cadastrado, enviaremos instruções para redefinir a senha.");
-
-            var token = Guid.NewGuid().ToString(); // <= geracao do token
-
-            var resetToken = new PasswordResetToken
+            }
+            catch (Exception ex)
             {
-                Token = token,
-                UserId = user.IdUsuario,
-                Expiration = DateTime.UtcNow.AddMinutes(30)
-            };
+                // Em caso de qualquer falha (ex: banco de dados offline, serviço de e-mail com problemas),
+                // a exceção será capturada aqui.
 
-            _context.PasswordResetTokens.Add(resetToken);
-            await _context.SaveChangesAsync();
+                // É crucial logar a exceção para diagnóstico de problemas.
+                // Ex: _logger.LogError(ex, "Ocorreu um erro ao processar a solicitação de redefinição de senha.");
 
-            // ============== IMPORTANTE ==============
-            // Link de redefinição de senha, vai ter que mudar qnd tiver deployado
-            var resetLink = $"https://seudominio.com/reset-password?token={token}";
-
-            var emailRequest = new EmailRequestDto
-            {
-                To = user.Email,
-                Subject = "Redefinição de Senha - EloDrinks",
-                Body = $@"
-            <p>Olá {user.Nome},</p>
-            <p>Você solicitou uma redefinição de senha.</p>
-            <p>Clique no link abaixo para criar uma nova senha. O link expira em 30 minutos:</p>
-            <p><a href='{resetLink}'>Redefinir senha</a></p>
-            <p>Se você não solicitou isso, ignore este e-mail.</p>
-            <p>Atenciosamente,<br/>Equipe EloDrinks</p>"
-            };
-
-            await _emailService.SendEmailAsync(emailRequest);
-
-            return Ok("Se o e-mail estiver cadastrado, enviaremos instruções para redefinir a senha.");
+                // Retorna um erro 500 (Internal Server Error) com uma mensagem genérica para o cliente.
+                // Isso evita expor detalhes técnicos da falha.
+                return StatusCode(500, $"Ocorreu uma falha interna ao processar sua solicitação: {ex.Message}");
+            }
         }
 
         [HttpPost("reset-password")]
