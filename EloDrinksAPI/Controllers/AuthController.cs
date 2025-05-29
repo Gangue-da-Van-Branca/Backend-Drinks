@@ -90,7 +90,11 @@ namespace EloDrinksAPI.Controllers
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return Ok(new { token = tokenHandler.WriteToken(token) });
+            return Ok(new
+            {
+                token = tokenHandler.WriteToken(token),
+                role = role  // adiciona o tipo do usuário aqui
+            });
         }
 
         [HttpPost("forgot-password")]
