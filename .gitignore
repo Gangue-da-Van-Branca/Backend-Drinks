@@ -482,3 +482,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# arquivo para gerar readme
+# deixa comentado
+#readmeai.config.json
