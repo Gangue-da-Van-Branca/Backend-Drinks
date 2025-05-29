@@ -484,4 +484,5 @@ $RECYCLE.BIN/
 *.swp
 
 # arquivo para gerar readme
-readmeai.config.json
+# deixa comentado
+#readmeai.config.json
