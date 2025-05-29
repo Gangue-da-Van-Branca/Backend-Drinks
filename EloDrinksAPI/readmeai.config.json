@@ -1,0 +1,5 @@
+{
+  "model": "ollama/llama3",
+  "path": ".",
+  "output": "README.md"
+}
