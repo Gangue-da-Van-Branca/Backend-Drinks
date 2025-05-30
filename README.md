@@ -3,7 +3,7 @@
 <!-- HEADER STYLE: CLASSIC -->
 <div align="center">
 
-<img src="![WhatsApp Image 2025-05-28 at 23 25 20 (1)](https://github.com/user-attachments/assets/5744f335-e044-4d47-aa36-40413dfcf2c5)" width="30%" style="position: relative; top: 0; right: 0;>
+![WhatsApp Image 2025-05-28 at 23 25 20 (1)](https://github.com/user-attachments/assets/5744f335-e044-4d47-aa36-40413dfcf2c5)
 
 # <code>❯ API EloDrinks</code>
 
