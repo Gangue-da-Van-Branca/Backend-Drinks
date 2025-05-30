@@ -45,13 +45,14 @@
 
 ## Overview
 
-
+Esta API foi desenvolvida com .NET 7 e segue os princípios de arquitetura limpa, proporcionando uma base sólida, escalável e de fácil manutenção para aplicações web.
+Ela oferece endpoints RESTful para operações CRUD, autenticação de usuários com JWT, controle de permissões e gerenciamento de dados de forma segura e eficiente.
 
 ---
 
 ## Features
 
-<code>❯ REPLACE-ME</code>
+<code>❯ Work in progress </code>
 
 ---
 
