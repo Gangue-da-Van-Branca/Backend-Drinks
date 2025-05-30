@@ -61,6 +61,11 @@ public class ItemController : ControllerBase
 
             foreach (var dto in dtos)
             {
+                if(_context.Items.Any(i => i.Nome == dto.Nome))
+                {
+                    return BadRequest($"Item com nome '{dto.Nome}' já existe.");
+                }
+
                 var entity = ItemMapper.ToEntity(dto);
                 entity.IdItem = "i1" + GerarIdService.GerarIdAlfanumerico(16);
                 itensCriados.Add(entity);
@@ -70,7 +75,7 @@ public class ItemController : ControllerBase
             await _context.SaveChangesAsync();
 
             var result = itensCriados.Select(ItemMapper.ToDTO).ToList();
-            return Ok(result);
+            return Ok("Item cadastrado com sucesso.");
         }
         catch
         {
@@ -86,13 +91,13 @@ public class ItemController : ControllerBase
         {
             var item = await _context.Items.FindAsync(id);
             if (item == null)
-                return NotFound();
+                return NotFound("Item não encontrado.");
 
             ItemMapper.ApplyUpdate(dto, item);
             _context.Entry(item).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok("Item atualizado com sucesso.");
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -114,12 +119,12 @@ public class ItemController : ControllerBase
         {
             var item = await _context.Items.FindAsync(id);
             if (item == null)
-                return NotFound();
+                return NotFound("Item não encontrado.");
 
             _context.Items.Remove(item);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("Item deletado com sucesso.");
         }
         catch
         {
