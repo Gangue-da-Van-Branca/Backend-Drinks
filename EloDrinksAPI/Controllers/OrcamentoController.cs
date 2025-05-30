@@ -138,7 +138,7 @@ public class OrcamentoController : ControllerBase
             // Bares adicionais
             foreach (var bar in dto.Opcionais.BaresAdicionais)
             {
-                var item = await _context.Items.FirstOrDefaultAsync(i => i.Nome == barNome);
+                var item = await _context.Items.FirstOrDefaultAsync(i => i.Nome == bar);
                 if (item != null)
                 {
                     _context.OrcamentoHasItems.Add(new OrcamentoHasItem
@@ -151,7 +151,7 @@ public class OrcamentoController : ControllerBase
                 }
                 else
                 {
-                    Console.WriteLine($"AVISO: Bar adicional com nome '{barNome}' não encontrado.");
+                    Console.WriteLine($"AVISO: Bar adicional com nome '{bar}' não encontrado.");
                 }
             }
 
