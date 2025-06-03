@@ -3,6 +3,7 @@ using System;
 using EloDrinksAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EloDrinksAPI.Migrations
 {
     [DbContext(typeof(ElodrinkContext))]
-    partial class ElodrinkContextModelSnapshot : ModelSnapshot
+    [Migration("20250603015359_adicionandoCascade")]
+    partial class adicionandoCascade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

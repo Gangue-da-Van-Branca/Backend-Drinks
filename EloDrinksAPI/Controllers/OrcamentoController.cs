@@ -252,19 +252,19 @@ public class OrcamentoController : ControllerBase
 
     // DELETE: api/Orcamento/5
     //[Authorize(Roles = "admin")]
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteOrcamento(string id)
+    [HttpDelete("{idOrcamento}/{idUsuario}")]
+    public async Task<IActionResult> DeleteOrcamento(string idOrcamento, string idUsuario)
     {
         try
         {
-            var orcamento = await _context.Orcamentos.FindAsync(id);
+            var orcamento = await _context.Orcamentos.FindAsync(idOrcamento, idUsuario);
             if (orcamento == null)
                 return NotFound();
 
             _context.Orcamentos.Remove(orcamento);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("Orçamento deletado com sucesso.");
         }
         catch (Exception ex)
         {
