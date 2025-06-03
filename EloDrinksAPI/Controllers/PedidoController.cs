@@ -95,19 +95,19 @@ namespace EloDrinksAPI.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePedido(string id)
+        [HttpDelete("{idPedido}/{orcamentoId}/{usuarioId}")]
+        public async Task<IActionResult> DeletePedido(string idPedido, string orcamentoId, string usuarioId)
         {
             try
             {
-                var pedido = await _context.Pedidos.FindAsync(id);
+                var pedido = await _context.Pedidos.FindAsync(idPedido, orcamentoId, usuarioId);
                 if (pedido == null)
                     return NotFound("Pedido não encontrado para exclusão.");
 
                 _context.Pedidos.Remove(pedido);
                 await _context.SaveChangesAsync();
 
-                return NoContent();
+                return Ok(pedido);
             }
             catch (DbUpdateException ex)
             {
