@@ -84,7 +84,7 @@ public class OrcamentoController : ControllerBase
                 Endereco = dto.InfosContratante.Endereco,
                 TipoEvento = dto.BaseFesta.TipoFesta,
                 Status = "pendente",
-                Preco = 0f,
+                Preco = dto.Preco,
                 UsuarioIdUsuario = usuario.IdUsuario,
                 DrinksSelecionados = string.Join(", ", dto.BaseFesta.DrinksSelecionados.Select(d => d.Nome))
             };

@@ -47,7 +47,7 @@ namespace EloDrinksAPI.Mappers
                 {
                     TipoFesta = entity.TipoEvento,
                     DrinksSelecionados = entity.OrcamentoHasItems
-                        .Where(i => i.ItemIdItemNavigation.Tipo == "drink")
+                        .Where(i => i.ItemIdItemNavigation.Tipo == "Drink Alcoólico" || i.ItemIdItemNavigation.Tipo == "Soft Drink")
                         .Select(i => new DrinkDto
                         {
                             Id = i.ItemIdItem,
@@ -71,13 +71,13 @@ namespace EloDrinksAPI.Mappers
                 Opcionais = new OpcionaisDto
                 {
                     Shots = entity.OrcamentoHasItems
-                        .Where(i => i.ItemIdItemNavigation.Tipo == "shot")
+                        .Where(i => i.ItemIdItemNavigation.Tipo == "Shot")
                         .ToDictionary(i => i.ItemIdItemNavigation.Nome, i => i.Quantidade),
                     Extras = entity.OrcamentoHasItems
-                        .Where(i => i.ItemIdItemNavigation.Tipo == "extra")
+                        .Where(i => i.ItemIdItemNavigation.Tipo == "Opcional")
                         .ToDictionary(i => i.ItemIdItemNavigation.Nome, i => i.Quantidade),
                     BaresAdicionais = entity.OrcamentoHasItems
-                        .Where(i => i.ItemIdItemNavigation.Tipo == "barAdicional")
+                        .Where(i => i.ItemIdItemNavigation.Tipo == "Bar")
                         .Select(i => i.ItemIdItemNavigation.Nome)
                         .ToList()
                 },
