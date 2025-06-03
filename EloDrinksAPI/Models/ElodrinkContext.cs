@@ -22,11 +22,11 @@ public partial class ElodrinkContext : DbContext
 
     public virtual DbSet<OrcamentoHasItem> OrcamentoHasItems { get; set; }
 
+    public virtual DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+
     public virtual DbSet<Pedido> Pedidos { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
-
-    public DbSet<PasswordResetToken> PasswordResetTokens { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
@@ -73,7 +73,9 @@ public partial class ElodrinkContext : DbContext
             entity.Property(e => e.UsuarioIdUsuario)
                 .HasMaxLength(45)
                 .HasColumnName("Usuario_idUsuario");
-            entity.Property(e => e.Cep).HasColumnName("cep");
+            entity.Property(e => e.Cep)
+                .HasMaxLength(20)
+                .HasColumnName("cep");
             entity.Property(e => e.Data).HasColumnName("data");
             entity.Property(e => e.DrinksSelecionados)
                 .HasColumnType("text")
@@ -98,7 +100,7 @@ public partial class ElodrinkContext : DbContext
 
             entity.HasOne(d => d.UsuarioIdUsuarioNavigation).WithMany(p => p.Orcamentos)
                 .HasForeignKey(d => d.UsuarioIdUsuario)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_Orcamento_Usuario1");
         });
 
@@ -126,13 +128,30 @@ public partial class ElodrinkContext : DbContext
 
             entity.HasOne(d => d.ItemIdItemNavigation).WithMany(p => p.OrcamentoHasItems)
                 .HasForeignKey(d => d.ItemIdItem)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_Orcamento_has_Item_Item1");
 
             entity.HasOne(d => d.Orcamento).WithMany(p => p.OrcamentoHasItems)
                 .HasForeignKey(d => new { d.OrcamentoIdOrcamento, d.OrcamentoUsuarioIdUsuario })
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_Orcamento_has_Item_Orcamento1");
+        });
+
+        modelBuilder.Entity<PasswordResetToken>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("passwordresettokens");
+
+            entity.HasIndex(e => e.UserId, "UserId");
+
+            entity.Property(e => e.Expiration).HasColumnType("datetime");
+            entity.Property(e => e.Token).HasMaxLength(255);
+            entity.Property(e => e.UserId).HasMaxLength(50);
+
+            entity.HasOne(d => d.User).WithMany(p => p.Passwordresettokens)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("passwordresettokens_ibfk_1");
         });
 
         modelBuilder.Entity<Pedido>(entity =>
@@ -162,7 +181,7 @@ public partial class ElodrinkContext : DbContext
 
             entity.HasOne(d => d.Orcamento).WithMany(p => p.Pedidos)
                 .HasForeignKey(d => new { d.OrcamentoIdOrcamento, d.OrcamentoUsuarioIdUsuario })
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_Pedido_Orcamento1");
         });
 

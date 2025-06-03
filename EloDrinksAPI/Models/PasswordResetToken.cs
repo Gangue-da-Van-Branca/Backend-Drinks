@@ -1,23 +1,17 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
-namespace EloDrinksAPI.Models
+namespace EloDrinksAPI.Models;
+
+public partial class PasswordResetToken
 {
-    public class PasswordResetToken
-    {
-        [Key]
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        public string Token { get; set; } = null!;
+    public string Token { get; set; } = null!;
 
-        [Required]
-        public string UserId { get; set; } = null!;
+    public string UserId { get; set; } = null!;
 
-        [Required]
-        public DateTime Expiration { get; set; }
+    public DateTime Expiration { get; set; }
 
-        [ForeignKey("UserId")]
-        public Usuario Usuario { get; set; } = null!;
-    }
+    public virtual Usuario User { get; set; } = null!;
 }

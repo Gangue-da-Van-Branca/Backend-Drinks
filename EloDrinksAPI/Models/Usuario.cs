@@ -22,4 +22,6 @@ public partial class Usuario
     public string Tipo { get; set; } = null!;
 
     public virtual ICollection<Orcamento> Orcamentos { get; set; } = new List<Orcamento>();
+
+    public virtual ICollection<PasswordResetToken> Passwordresettokens { get; set; } = new List<PasswordResetToken>();
 }
