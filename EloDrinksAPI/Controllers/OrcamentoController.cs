@@ -235,14 +235,14 @@ public class OrcamentoController : ControllerBase
         {
             var orcamento = await _context.Orcamentos.FindAsync(idOrcamento, idUsuario);
             if (orcamento == null)
-                return NotFound();
+                return NotFound("Orçamento não encontrado.");
 
             OrcamentoMapper.ApplyUpdate(dto, orcamento);
             _context.Entry(orcamento).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("Orçamento atualizado com sucesso.");
         }
         catch (Exception ex)
         {
@@ -259,7 +259,7 @@ public class OrcamentoController : ControllerBase
         {
             var orcamento = await _context.Orcamentos.FindAsync(idOrcamento, idUsuario);
             if (orcamento == null)
-                return NotFound();
+                return NotFound("Orçamento não encontrado.");
 
             _context.Orcamentos.Remove(orcamento);
             await _context.SaveChangesAsync();
