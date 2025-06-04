@@ -228,12 +228,12 @@ public class OrcamentoController : ControllerBase
 
     // PUT: api/Orcamento/5
     //[Authorize(Roles = "admin")]
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutOrcamento(string id, UpdateOrcamentoDto dto)
+    [HttpPut("{idOrcamento}/{idUsuario}")]
+    public async Task<IActionResult> PutOrcamento(string idOrcamento, string idUsuario, UpdateOrcamentoDto dto)
     {
         try
         {
-            var orcamento = await _context.Orcamentos.FindAsync(id);
+            var orcamento = await _context.Orcamentos.FindAsync(idOrcamento, idUsuario);
             if (orcamento == null)
                 return NotFound();
 
