@@ -47,7 +47,7 @@ namespace EloDrinksAPI.Mappers
                 {
                     TipoFesta = entity.TipoEvento,
                     DrinksSelecionados = entity.OrcamentoHasItems
-                        .Where(i => i.ItemIdItemNavigation.Tipo == "Drink Alcólico" || i.ItemIdItemNavigation.Tipo == "Soft Drink")
+                        .Where(i => i.ItemIdItemNavigation.Tipo == "Drink Alcoólico" || i.ItemIdItemNavigation.Tipo == "Soft Drink")
                         .Select(i => new DrinkDto
                         {
                             Id = i.ItemIdItem,
@@ -88,7 +88,7 @@ namespace EloDrinksAPI.Mappers
         public static OrcamentoFrontInputDto ToFrontendDTO(Orcamento orcamento)
         {
             var drinks = orcamento.OrcamentoHasItems
-                .Where(i => i.ItemIdItemNavigation.Tipo == "Drink Alcólico" || i.ItemIdItemNavigation.Tipo == "Soft Drink")
+                .Where(i => i.ItemIdItemNavigation.Tipo == "Drink Alcoólico" || i.ItemIdItemNavigation.Tipo == "Soft Drink")
                 .Select(i => new DrinkDto
                 {
                     Id = i.ItemIdItem,
