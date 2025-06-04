@@ -5,6 +5,7 @@ using EloDrinksAPI.Mappers;
 using EloDrinksAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using EloDrinksAPI.Services;
+using EloDrinksAPI.Const;
 
 namespace EloDrinksAPI.Controllers;
 
@@ -161,11 +162,26 @@ public class OrcamentoController : ControllerBase
                             i.OrcamentoUsuarioIdUsuario == usuario.IdUsuario)
                 .ToListAsync();
 
+            var nomesDrinksBaseFesta = dto.BaseFesta.DrinksSelecionados.Select(d => d.Nome).ToList(); // lista do q vai er ignorado na conta
+
             float totalPedido = itensOrcamento
+                .Where(i => !nomesDrinksBaseFesta.Contains(i.ItemIdItemNavigation.Nome))
                 .Sum(i => i.ItemIdItemNavigation.Preco * i.Quantidade);
 
-            // att orcamento cm valor correto
-            orcamento.Preco = totalPedido;
+            // adicional por tipo de festa
+            string tipoFesta = dto.BaseFesta.TipoFesta?.Trim() ?? "";
+            // se achar usa o valor, se n achar é pq é valor de festa custom
+            float valorTipoFesta = TipoFesta.TipoFestaValores.TryGetValue(tipoFesta, out var valor) ? valor: TipoFesta.ValorOutro;
+
+            // adicional por convidados (85/pessoa)
+            int convidados = int.TryParse(dto.InfosContratante.Convidados, out var qtd) ? qtd : 0;
+            float valorPorPessoa = convidados * 85f;
+
+            // valor final
+            float totalFinal = totalPedido + valorTipoFesta + valorPorPessoa;
+
+            // att orçamento cm valor final
+            orcamento.Preco = totalFinal;
             _context.Entry(orcamento).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
@@ -175,7 +191,7 @@ public class OrcamentoController : ControllerBase
                 IdPedido = "p1" + GerarIdService.GerarIdAlfanumerico(16),
                 OrcamentoIdOrcamento = orcamento.IdOrcamento,
                 OrcamentoUsuarioIdUsuario = usuario.IdUsuario,
-                Total = totalPedido,
+                Total = totalFinal, // valor com as logicas de tipoFesta e n convidados
                 Status = "Pendente",
                 DataCriacao = DateOnly.FromDateTime(DateTime.Now)
             };
