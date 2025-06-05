@@ -23,17 +23,14 @@ jobs:
         with:
           dotnet-version: '8.x'
 
-      - name: Navigate to project directory
-        run: cd ./EloDrinksAPI
-
-      - name: List files in project directory for debugging
-        run: ls -R
+     # - name: Navigate to project directory
+     #   run: cd ./EloDrinksAPI
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build ./ElodDrinksAPI/EloDrinksAPI.csproj --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+        run: dotnet publish ./ElodDrinksAPI/EloDrinksAPI.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
