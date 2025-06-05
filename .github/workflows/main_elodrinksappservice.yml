@@ -23,6 +23,9 @@ jobs:
         with:
           dotnet-version: '8.x'
 
+      - name: Navigate to project directory
+        run: cd EloDrinksAPI
+
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
