@@ -5,6 +5,7 @@ using EloDrinksAPI.Mappers;
 using EloDrinksAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using EloDrinksAPI.Services;
+using EloDrinksAPI.Const;
 
 namespace EloDrinksAPI.Controllers;
 
@@ -79,12 +80,11 @@ public class OrcamentoController : ControllerBase
                 Data = DateOnly.Parse(dto.InfosContratante.Data),
                 HoraInicio = TimeOnly.Parse(dto.InfosContratante.HorarioInicio),
                 HoraFim = TimeOnly.Parse(dto.InfosContratante.HorarioFinal),
-                Cep = TratarCep(dto.InfosContratante.Cep), // CEP string
+                Cep = TratarCep(dto.InfosContratante.Cep),
                 QtdPessoas = int.Parse(dto.InfosContratante.Convidados),
                 Endereco = dto.InfosContratante.Endereco,
                 TipoEvento = dto.BaseFesta.TipoFesta,
                 Status = "pendente",
-                Preco = dto.Preco,
                 UsuarioIdUsuario = usuario.IdUsuario,
                 DrinksSelecionados = string.Join(", ", dto.BaseFesta.DrinksSelecionados.Select(d => d.Nome))
             };
@@ -92,19 +92,17 @@ public class OrcamentoController : ControllerBase
             _context.Orcamentos.Add(orcamento);
 
             // Adiciona drinks
-            foreach (var drinkDto in dto.BaseFesta.DrinksSelecionados) // Renomeado para drinkDto para clareza
+            foreach (var drinkDto in dto.BaseFesta.DrinksSelecionados)
             {
-                // --- ALTERAÇÃO AQUI: Busca pelo Nome em vez do Id ---
                 var item = await _context.Items.FirstOrDefaultAsync(i => i.Nome == drinkDto.Nome);
-
                 if (item != null)
                 {
                     _context.OrcamentoHasItems.Add(new OrcamentoHasItem
                     {
                         OrcamentoIdOrcamento = orcamento.IdOrcamento,
                         OrcamentoUsuarioIdUsuario = usuario.IdUsuario,
-                        ItemIdItem = item.IdItem, // Ainda usamos o IdItem do item encontrado para a FK
-                        Quantidade = 1 // Assumindo quantidade 1 para drinks selecionados, ajuste se necessário
+                        ItemIdItem = item.IdItem,
+                        Quantidade = 1
                     });
                 }
             }
@@ -112,7 +110,7 @@ public class OrcamentoController : ControllerBase
             // Adiciona opcionais
             async Task AddItens(Dictionary<string, int> itens)
             {
-                foreach (var i in itens.Where(i => i.Value > 0)) // i.Key é o nome do item, i.Value é a quantidade
+                foreach (var i in itens.Where(i => i.Value > 0))
                 {
                     var item = await _context.Items.FirstOrDefaultAsync(x => x.Nome == i.Key);
                     if (item != null)
@@ -127,7 +125,7 @@ public class OrcamentoController : ControllerBase
                     }
                     else
                     {
-                        Console.WriteLine($"AVISO: Item opcional (shot/extra) com nome '{i.Key}' não encontrado.");
+                        Console.WriteLine($"AVISO: Item opcional '{i.Key}' não encontrado.");
                     }
                 }
             }
@@ -146,31 +144,46 @@ public class OrcamentoController : ControllerBase
                         OrcamentoIdOrcamento = orcamento.IdOrcamento,
                         OrcamentoUsuarioIdUsuario = usuario.IdUsuario,
                         ItemIdItem = item.IdItem,
-                        Quantidade = 1 // Assumindo quantidade 1 para bares, ajuste se necessário
+                        Quantidade = 1
                     });
                 }
                 else
                 {
-                    Console.WriteLine($"AVISO: Bar adicional com nome '{bar}' não encontrado.");
+                    Console.WriteLine($"AVISO: Bar adicional '{bar}' não encontrado.");
                 }
             }
 
-            await _context.SaveChangesAsync(); // Salva o orçamento e todos os OrcamentoHasItems
+            await _context.SaveChangesAsync();
 
-            // Calcula o total com base nos itens - esta parte permanece a mesma
+            // calculo do total
             var itensOrcamento = await _context.OrcamentoHasItems
                 .Include(i => i.ItemIdItemNavigation)
                 .Where(i => i.OrcamentoIdOrcamento == orcamento.IdOrcamento &&
                             i.OrcamentoUsuarioIdUsuario == usuario.IdUsuario)
                 .ToListAsync();
 
-            float totalPedido = 0;
-            if (itensOrcamento.Any())
-            {
-                totalPedido = itensOrcamento
-                   .Sum(i => i.ItemIdItemNavigation.Preco * i.Quantidade);
-            }
+            var nomesDrinksBaseFesta = dto.BaseFesta.DrinksSelecionados.Select(d => d.Nome).ToList(); // lista do q vai er ignorado na conta
 
+            float totalPedido = itensOrcamento
+                .Where(i => !nomesDrinksBaseFesta.Contains(i.ItemIdItemNavigation.Nome))
+                .Sum(i => i.ItemIdItemNavigation.Preco * i.Quantidade);
+
+            // adicional por tipo de festa
+            string tipoFesta = dto.BaseFesta.TipoFesta?.Trim() ?? "";
+            // se achar usa o valor, se n achar é pq é valor de festa custom
+            float valorTipoFesta = TipoFesta.TipoFestaValores.TryGetValue(tipoFesta, out var valor) ? valor: TipoFesta.ValorOutro;
+
+            // adicional por convidados (85/pessoa)
+            int convidados = int.TryParse(dto.InfosContratante.Convidados, out var qtd) ? qtd : 0;
+            float valorPorPessoa = convidados * 85f;
+
+            // valor final
+            float totalFinal = totalPedido + valorTipoFesta + valorPorPessoa;
+
+            // att orçamento cm valor final
+            orcamento.Preco = totalFinal;
+            _context.Entry(orcamento).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
 
             // Cria o pedido automaticamente
             var pedido = new Pedido
@@ -178,20 +191,18 @@ public class OrcamentoController : ControllerBase
                 IdPedido = "p1" + GerarIdService.GerarIdAlfanumerico(16),
                 OrcamentoIdOrcamento = orcamento.IdOrcamento,
                 OrcamentoUsuarioIdUsuario = usuario.IdUsuario,
-                Total = totalPedido,
+                Total = totalFinal, // valor com as logicas de tipoFesta e n convidados
                 Status = "Pendente",
                 DataCriacao = DateOnly.FromDateTime(DateTime.Now)
             };
 
             _context.Pedidos.Add(pedido);
-            await _context.SaveChangesAsync(); // Salva o pedido
+            await _context.SaveChangesAsync();
 
             return Ok(new { idOrcamento = orcamento.IdOrcamento, idPedido = pedido.IdPedido });
-
         }
         catch (DbUpdateException ex)
         {
-            // Log detalhado do erro do banco
             Console.WriteLine($"DbUpdateException: {ex.Message}");
             if (ex.InnerException != null)
             {
@@ -199,10 +210,10 @@ public class OrcamentoController : ControllerBase
             }
             return StatusCode(500, $"Erro ao salvar no banco: {ex.InnerException?.Message ?? ex.Message}");
         }
-        catch (FormatException ex) // Captura erros de Parse (DateOnly, TimeOnly, int)
+        catch (FormatException ex)
         {
             Console.WriteLine($"FormatException: {ex.Message}");
-            return BadRequest($"Erro de formatação em um dos campos de data, hora ou número: {ex.Message}");
+            return BadRequest($"Erro de formatação: {ex.Message}");
         }
         catch (Exception ex)
         {
@@ -210,7 +221,6 @@ public class OrcamentoController : ControllerBase
             return StatusCode(500, $"Erro ao criar orçamento: {ex.Message}");
         }
     }
-
 
     // O método TratarCep permanece o mesmo
     private string TratarCep(string rawCep)

@@ -134,8 +134,7 @@ namespace EloDrinksAPI.Mappers
                     Shots = shots,
                     Extras = extras,
                     BaresAdicionais = bares
-                },
-                Preco = orcamento.Preco
+                }
             };
         }
 
