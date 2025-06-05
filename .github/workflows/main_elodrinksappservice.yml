@@ -26,6 +26,9 @@ jobs:
       - name: Navigate to project directory
         run: cd ./EloDrinksAPI
 
+      - name: List files in project directory for debugging
+        run: ls -R
+
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
