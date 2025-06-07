@@ -6,7 +6,7 @@ namespace EloDrinksAPI.DTOs.pedido
     {
         public float? Total { get; set; }
 
-        [RegularExpression(@"^(Pendente|Pago|Cancelado)$", ErrorMessage = "Status inválido.")]
+        [RegularExpression(@"^(Pendente|Aprovado|Cancelado)$", ErrorMessage = "Status inválido.")]
         public string? Status { get; set; }
 
         public string? OrcamentoIdOrcamento { get; set; }
