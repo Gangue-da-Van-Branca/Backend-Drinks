@@ -36,7 +36,9 @@ namespace EloDrinksAPI.Controllers
         {
             try
             {
-                var pedido = await _context.Pedidos.FindAsync(id);
+                var pedido = await _context.Pedidos
+                    .FirstOrDefaultAsync(p => p.IdPedido == id);
+
                 if (pedido == null)
                     return NotFound("Pedido não encontrado.");
 
@@ -71,19 +73,19 @@ namespace EloDrinksAPI.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPedido(string id, [FromBody] UpdatePedidoDto dto)
+        [HttpPut("{idPedido}/{idOrcamento}/{idUsuario}")]
+        public async Task<IActionResult> PutPedido(string idPedido, string idOrcamento, string idUsuario, [FromBody] UpdatePedidoDto dto)
         {
             try
             {
-                var pedido = await _context.Pedidos.FindAsync(id);
+                var pedido = await _context.Pedidos.FindAsync(idPedido, idOrcamento, idUsuario);
                 if (pedido == null)
-                    return NotFound("Pedido não encontrado para atualização.");
+                    return NotFound("Pedido não encontrado.");
 
                 PedidoMapper.ApplyUpdate(dto, pedido);
                 await _context.SaveChangesAsync();
 
-                return NoContent();
+                return Ok("Pedido atualizado com sucesso.");
             }
             catch (DbUpdateException ex)
             {
@@ -102,12 +104,12 @@ namespace EloDrinksAPI.Controllers
             {
                 var pedido = await _context.Pedidos.FindAsync(idPedido, orcamentoId, usuarioId);
                 if (pedido == null)
-                    return NotFound("Pedido não encontrado para exclusão.");
+                    return NotFound("Pedido não encontrado.");
 
                 _context.Pedidos.Remove(pedido);
                 await _context.SaveChangesAsync();
 
-                return Ok(pedido);
+                return Ok("Pedido deletado com sucesso.");
             }
             catch (DbUpdateException ex)
             {
