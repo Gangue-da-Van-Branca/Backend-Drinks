@@ -1,0 +1,2145 @@
+{
+	"info": {
+		"_postman_id": "34776802-d22f1844-6f64-4533-8912-7d0175065e1e",
+		"name": "EloDrinks",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Usuario",
+			"item": [
+				{
+					"name": "Register new user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "20aa61bb-0c17-430b-8fcc-fa331b10af42",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Sucess)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Usuário registrado com sucesso\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d28c3d4b-342d-4ff4-ad5c-b1f8823e9373",
+								"exec": [
+									"//Pegando a data de cadastro para comparação futura\r",
+									"let data = new Date();\r",
+									"\r",
+									"//data.setHours(data.getHours() - 3); //Fuso horário\r",
+									"pm.environment.set(\"dataCadastro\", data.toISOString().split('T')[0]); //Pegando só a data"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-f07d20c3-383d-46dc-9216-649e309e20af",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Nome\": \"Gabriel\",\r\n    \"Sobrenome\": \"Alves Fernandes\",\r\n    \"Email\": \"gfernandes@ges.inatel.br\",\r\n    \"Telefone\": \"(24) 99999-9999\",\r\n    \"Senha\": \"VascoDaGama123@\",\r\n    \"Tipo\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Auth/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register same user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "20aa61bb-0c17-430b-8fcc-fa331b10af42",
+								"exec": [
+									"pm.test(\"Response status code is 400\", function(){\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Fail)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Usuário já existe\")\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d28c3d4b-342d-4ff4-ad5c-b1f8823e9373",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-43c313bd-2c8e-4eb1-bbfa-8090a130a793",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Nome\": \"Gabriel\",\r\n    \"Sobrenome\": \"Alves Fernandes\",\r\n    \"Email\": \"gfernandes@ges.inatel.br\",\r\n    \"Telefone\": \"(24) 99999-9999\",\r\n    \"Senha\": \"VascoDaGama123@\",\r\n    \"Tipo\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Auth/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7810fcc6-388a-4cbc-a913-72004df78310",
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"token\", jsonData.token);\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains token\", function(){\r",
+									"    pm.response.to.have.jsonBody('token');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-d4b326a3-89c8-4fe5-a9aa-94ee60ea08d0",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Email\": \"gfernandes@ges.inatel.br\",\r\n    \"Senha\": \"VascoDaGama123@\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Auth/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "00226090-9d28-4f6e-87ec-9eee9c508379",
+								"exec": [
+									"let dados = pm.response.json();\r",
+									"let nome = \"Gabriel\";\r",
+									"let usuario = dados.find(u => u.nome === nome);\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Find the user by name and return the id\", function (){\r",
+									"\r",
+									"    pm.expect(usuario).to.not.be.undefined;\r",
+									"    pm.environment.set(\"idUsuario\", usuario.idUsuario);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains correct data\", function(){\r",
+									"\r",
+									"    let data = pm.environment.get(\"dataCadastro\");\r",
+									"\r",
+									"    pm.expect(usuario.idUsuario).to.contain(\"u1\")\r",
+									"    pm.expect(usuario.sobrenome).to.equal(\"Alves Fernandes\")\r",
+									"    pm.expect(usuario.email).to.equal(\"gfernandes@ges.inatel.br\")\r",
+									"    pm.expect(usuario.telefone).to.equal(\"(24) 99999-9999\")\r",
+									"    pm.expect(usuario.dataCadastro).to.eql(data)\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-50e8cf16-1621-4b24-86a5-11daad72940d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Usuario",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Usuario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "728c1a09-b526-40a4-bb73-f957a90c4bb6",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Success)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.eql(\"Usuário atualizado com sucesso.\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-7a36fbb0-9701-4b10-aca2-ead9471f04e6",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idUsuario\": \"Teste não funciona\",\r\n  \"nome\": \"João Pedro\",\r\n  \"sobrenome\": \"Maciel\",\r\n  \"email\": \"megacavaleiro@inatel.br\",\r\n  \"telefone\": \"(35) 98765-4321\",\r\n  \"tipo\": \"admin\",\r\n  \"dataCadastro\": \"Teste não funciona\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Usuario/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Usuario",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{idUsuario}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Specific user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7d0b8e20-94f3-42a4-8568-070dfcf13882",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains updated data\", function(){\r",
+									"\r",
+									"    let dados = pm.response.json();\r",
+									"    pm.expect(dados.nome).to.equal(\"João Pedro\")\r",
+									"    pm.expect(dados.sobrenome).to.equal(\"Maciel\")\r",
+									"    pm.expect(dados.email).to.equal(\"megacavaleiro@inatel.br\")\r",
+									"    pm.expect(dados.telefone).to.equal(\"(35) 98765-4321\")\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-a0317b4f-44b6-4233-a34e-7712daababc5",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Usuario/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Usuario",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{idUsuario}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete existing user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a96b4979-cc98-4c59-9cbd-273022f5b71e",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Success)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Usuário deletado com sucesso\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-69b26ee5-d38c-490b-aecd-407fa5fb94f2",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Usuario/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Usuario",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{idUsuario}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete non existing user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a96b4979-cc98-4c59-9cbd-273022f5b71e",
+								"exec": [
+									"pm.test(\"Response status code is 404\", function(){\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Fail)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Usuário não encontrado\");\r",
+									"});\r",
+									"\r",
+									"pm.environment.unset(\"idOrcamento\")\r",
+									"pm.environment.unset(\"idPedido\")\r",
+									"pm.environment.unset(\"idUsuario\")\r",
+									"pm.environment.unset(\"idItem\")\r",
+									"pm.environment.unset(\"dataCadastro\")\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "473f79ab-c558-4372-b843-227a24e49fa3",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-3fd6b57f-ac10-480b-bc85-0ae8706fe672",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Usuario/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Usuario",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{idUsuario}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "34776802-d7cacb16-e10f-4f9b-bb4f-9aa90adc3239"
+		},
+		{
+			"name": "Item",
+			"item": [
+				{
+					"name": "Register new item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "20aa61bb-0c17-430b-8fcc-fa331b10af42",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Sucess)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Item cadastrado com sucesso\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-9bb15eb3-1a98-4713-81f4-04a8c91d967c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"Nome\": \"Cerveja\",\r\n        \"Descricao\": \"Cerveja Brahma 330mL\",\r\n        \"Preco\": 8.0,\r\n        \"Tipo\": \"Bebida Alcóolica\"\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Item",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register same item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "20aa61bb-0c17-430b-8fcc-fa331b10af42",
+								"exec": [
+									"pm.test(\"Response status code is 400\", function(){\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Sucess)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Item com nome 'Cerveja' já existe\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-8345dca7-ecca-4637-95af-c9e2efeb98cd",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"Nome\": \"Cerveja\",\r\n        \"Descricao\": \"Cerveja Brahma 330mL\",\r\n        \"Preco\": 8.0,\r\n        \"Tipo\": \"Bebida Alcóolica\"\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Item",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All itens",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "02ea989c-8743-4a40-b998-4abe47b92a48",
+								"exec": [
+									"let dados = pm.response.json();\r",
+									"let nome = \"Cerveja\";\r",
+									"let item = dados.find(u => u.nome === nome);\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Find the user by name and return the id\", function (){\r",
+									"\r",
+									"    pm.expect(item).to.not.be.undefined;\r",
+									"    pm.environment.set(\"idItem\", item.idItem);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains correct data\", function(){\r",
+									"\r",
+									"    pm.expect(item.idItem).to.contain(\"i1\")\r",
+									"    pm.expect(item.nome).to.equal(\"Cerveja\")\r",
+									"    pm.expect(item.descricao).to.equal(\"Cerveja Brahma 330mL\")\r",
+									"    pm.expect(item.preco).to.equal(8.0)\r",
+									"    pm.expect(item.tipo).to.equal(\"Bebida Alcóolica\")\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-a995f2af-66b7-4de7-8fbf-b8c492f0677a",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Item",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e0264dae-0dd4-463e-b1b4-a499ec894397",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Success)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.eql(\"Item atualizado com sucesso.\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-a9041048-70bc-4e49-8a0a-92677c6e3d22",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nome\": \"Cosmopolitan\",\r\n  \"descricao\": \"Sei lá porra\",\r\n  \"preco\": 12.50,\r\n  \"tipo\": \"Drink Alcóolico\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Item/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Item",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{idItem}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Specific item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e0264dae-0dd4-463e-b1b4-a499ec894397",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains updated data\", function(){\r",
+									"\r",
+									"    let item = pm.response.json();\r",
+									"    pm.expect(item.idItem).to.contain(\"i1\")\r",
+									"    pm.expect(item.nome).to.equal(\"Cosmopolitan\")\r",
+									"    pm.expect(item.descricao).to.equal(\"Sei lá porra\")\r",
+									"    pm.expect(item.preco).to.equal(12.50)\r",
+									"    pm.expect(item.tipo).to.equal(\"Drink Alcóolico\")\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-e409bfcf-4803-4e56-ac93-fc43ba1affb2",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Item/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Item",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{idItem}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete existing item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cd9ca324-9809-46c8-99b3-1fdcd252d74a",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Success)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Item deletado com sucesso\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-d242ad34-682a-42b6-ad19-af03d654144d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Item/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Item",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{idItem}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete existing item Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cd9ca324-9809-46c8-99b3-1fdcd252d74a",
+								"exec": [
+									"pm.test(\"Response status code is 404\", function(){\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Fail)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Item não encontrado\");\r",
+									"});\r",
+									"\r",
+									"pm.environment.unset(\"idOrcamento\")\r",
+									"pm.environment.unset(\"idPedido\")\r",
+									"pm.environment.unset(\"idUsuario\")\r",
+									"pm.environment.unset(\"idItem\")"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-68086263-6f70-41ca-9e89-44d41d1d1fdd",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Item/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Item",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{idItem}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "34776802-843cb674-ecb4-4271-b1c1-072b16e6f3ac"
+		},
+		{
+			"name": "Orcamento",
+			"item": [
+				{
+					"name": "Register new user Orcamento",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "20aa61bb-0c17-430b-8fcc-fa331b10af42",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Sucess)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Usuário registrado com sucesso\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d28c3d4b-342d-4ff4-ad5c-b1f8823e9373",
+								"exec": [
+									"//Pegando a data de cadastro para comparação futura\r",
+									"let data = new Date();\r",
+									"\r",
+									"//data.setHours(data.getHours() - 3); //Fuso horário\r",
+									"pm.environment.set(\"dataCadastro\", data.toISOString().split('T')[0]); //Pegando só a data"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-cdf35abe-e979-4ad9-9bbc-4b5c74bfee46",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Nome\": \"Gabriel\",\r\n    \"Sobrenome\": \"Alves Fernandes\",\r\n    \"Email\": \"gfernandes@ges.inatel.br\",\r\n    \"Telefone\": \"(24) 99999-9999\",\r\n    \"Senha\": \"VascoDaGama123@\",\r\n    \"Tipo\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Auth/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register new item Orcamento",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "20aa61bb-0c17-430b-8fcc-fa331b10af42",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Sucess)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Item cadastrado com sucesso\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-c5912999-7bde-4f50-829c-e39d55b89748",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"Nome\": \"Cerveja\",\r\n        \"Descricao\": \"Cerveja Brahma 330mL\",\r\n        \"Preco\": 8.0,\r\n        \"Tipo\": \"Bebida Alcóolica\"\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Item",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Orcamento",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f1ae4239-6973-42be-b462-8ff72260ed56",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let dados = pm.response.json();\r",
+									"pm.environment.set(\"idOrcamento\", dados.idOrcamento);\r",
+									"pm.environment.set(\"idPedido\", dados.idPedido);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-6bba2e36-577a-4b7f-a2cf-9db5a2338a77",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"baseFesta\": {\r\n    \"tipoFesta\": \"Show do Claudinho e do Bochecha\",\r\n    \"drinksSelecionados\": [\r\n      {\r\n        \"id\": \"MOCK:idCerveja\",\r\n        \"nome\": \"Caipirinha\",\r\n        \"descricao\": \"Drink de cachaça com limão\"\r\n      }\r\n    ]\r\n  },\r\n  \"infosContratante\": {\r\n    \"nome\": \"Hozier\",\r\n    \"sobrenome\": \"Hozier\",\r\n    \"telefone\": \"(24) 999728186\",\r\n    \"email\": \"gfernandes@ges.inatel.br\",\r\n    \"data\": \"2025-10-25\",\r\n    \"endereco\": \"Rua Coronel Francisco Palma\",\r\n    \"horarioInicio\": \"12:00:00\",\r\n    \"horarioFinal\": \"23:00:00\",\r\n    \"cep\": \"37540000\",\r\n    \"convidados\": \"100\"\r\n  },\r\n  \"opcionais\": {\r\n    \"shots\": {\r\n      \"additionalProp1\": 0,\r\n      \"additionalProp2\": 0,\r\n      \"additionalProp3\": 0\r\n    },\r\n    \"extras\": {\r\n      \"additionalProp1\": 0,\r\n      \"additionalProp2\": 0,\r\n      \"additionalProp3\": 0\r\n    },\r\n    \"baresAdicionais\": [\r\n      \"Bar muito bom mesmo\"\r\n    ]\r\n  },\r\n  \"preco\": 30000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Orcamento/front-create",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Orcamento",
+								"front-create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All orcamentos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "98815b35-a56e-4a33-bc95-f8967096d063",
+								"exec": [
+									"let dados = pm.response.json();\r",
+									"let id = pm.environment.get(\"idOrcamento\");\r",
+									"let orcamento = dados.find(u => u.idOrcamento === id);\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Find the orcamento by id and return the idUsuario\", function (){\r",
+									"\r",
+									"    pm.expect(orcamento).to.not.be.undefined;\r",
+									"    pm.environment.set(\"idUsuario\", orcamento.idUsuario);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "63256d5d-35c9-4dd7-9ceb-1eac027bb27a",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-680bfb4f-506f-4154-8ae9-2521a5903508",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Orcamento",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Orcamento"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update orcamento",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e0264dae-0dd4-463e-b1b4-a499ec894397",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Success)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.eql(\"Orçamento atualizado com sucesso.\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-156f4164-0294-4250-ba74-86394aff6530",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"data\": \"2025-06-04\",\r\n  \"cep\": \"37541111\",\r\n  \"horaInicio\": \"01:59:00\",\r\n  \"horaFim\": \"23:59:00\",\r\n  \"qtdPessoas\": 2147483647,\r\n  \"preco\": 99.99,\r\n  \"status\": \"Aprovado\",\r\n  \"tipoEvento\": \"Festa do Vitinho\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Orcamento/:idOrcamento/:idUsuario",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Orcamento",
+								":idOrcamento",
+								":idUsuario"
+							],
+							"variable": [
+								{
+									"key": "idOrcamento",
+									"value": "{{idOrcamento}}"
+								},
+								{
+									"key": "idUsuario",
+									"value": "{{idUsuario}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Specific orcamento",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7d0b8e20-94f3-42a4-8568-070dfcf13882",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains updated data\", function(){\r",
+									"\r",
+									"    let dados = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(dados.infosContratante.nome).to.equal(\"Gabriel\")\r",
+									"    pm.expect(dados.infosContratante.sobrenome).to.equal(\"Alves Fernandes\")\r",
+									"    pm.expect(dados.infosContratante.horarioInicio).to.equal(\"01:59\")\r",
+									"    pm.expect(dados.infosContratante.horarioFinal).to.equal(\"23:59\")\r",
+									"    pm.expect(dados.infosContratante.cep).to.equal(\"37541111\")\r",
+									"    pm.expect(dados.infosContratante.convidados).to.equal(\"2147483647\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-59a3dd63-0dc5-4249-aacc-e56b3191af17",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Orcamento/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Orcamento",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{idOrcamento}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete existing orcamento",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2e448eaf-d18c-49e8-a473-b8a3aef22d3f",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Success)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Orçamento deletado com sucesso\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-41156e8c-ae51-439a-95c3-c81dffedab56",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Orcamento/:idOrcamento/:idUsuario",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Orcamento",
+								":idOrcamento",
+								":idUsuario"
+							],
+							"variable": [
+								{
+									"key": "idOrcamento",
+									"value": "{{idOrcamento}}"
+								},
+								{
+									"key": "idUsuario",
+									"value": "{{idUsuario}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete existing user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a96b4979-cc98-4c59-9cbd-273022f5b71e",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Success)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Usuário deletado com sucesso\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-3c472398-d067-4fec-a972-0de6d3f31704",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Usuario/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Usuario",
+								":id"
+							],
+							"variable": [
+								{
+									"id": "1e01b7d9-e807-49ef-b771-1c38146322d9",
+									"key": "id",
+									"value": "{{idUsuario}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete non existing orcamento",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2e448eaf-d18c-49e8-a473-b8a3aef22d3f",
+								"exec": [
+									"pm.test(\"Response status code is 404\", function(){\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Fail)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Orçamento não encontrado\");\r",
+									"});\r",
+									"\r",
+									"pm.environment.unset(\"idOrcamento\")\r",
+									"pm.environment.unset(\"idPedido\")\r",
+									"pm.environment.unset(\"idUsuario\")\r",
+									"pm.environment.unset(\"idItem\")"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-8056f599-f153-4721-844b-14485a28bf4b",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Orcamento/:idOrcamento/:idUsuario",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Orcamento",
+								":idOrcamento",
+								":idUsuario"
+							],
+							"variable": [
+								{
+									"key": "idOrcamento",
+									"value": "{{idOrcamento}}"
+								},
+								{
+									"key": "idUsuario",
+									"value": "{{idUsuario}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "34776802-a8a554df-4d3a-4a27-8c8f-62dd5674b316"
+		},
+		{
+			"name": "Pedido",
+			"item": [
+				{
+					"name": "Register new user Pedido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "20aa61bb-0c17-430b-8fcc-fa331b10af42",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Sucess)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Usuário registrado com sucesso\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d28c3d4b-342d-4ff4-ad5c-b1f8823e9373",
+								"exec": [
+									"//Pegando a data de cadastro para comparação futura\r",
+									"let data = new Date();\r",
+									"\r",
+									"//data.setHours(data.getHours() - 3); //Fuso horário\r",
+									"pm.environment.set(\"dataCadastro\", data.toISOString().split('T')[0]); //Pegando só a data"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-30dd98f2-add1-433f-ab61-0e810710abb2",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Nome\": \"Gabriel\",\r\n    \"Sobrenome\": \"Alves Fernandes\",\r\n    \"Email\": \"gfernandes@ges.inatel.br\",\r\n    \"Telefone\": \"(24) 99999-9999\",\r\n    \"Senha\": \"VascoDaGama123@\",\r\n    \"Tipo\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Auth/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register new Orcamento Pedido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f1ae4239-6973-42be-b462-8ff72260ed56",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let dados = pm.response.json();\r",
+									"pm.environment.set(\"idOrcamento\", dados.idOrcamento);\r",
+									"pm.environment.set(\"idPedido\", dados.idPedido);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "5177f356-851f-496a-a777-08b2be65de02",
+								"exec": [
+									"//Pegando a data de cadastro para comparação futura\r",
+									"let data = new Date();\r",
+									"\r",
+									"//data.setHours(data.getHours() - 3); //Fuso horário\r",
+									"pm.environment.set(\"dataCadastro\", data.toISOString().split('T')[0]); //Pegando só a data"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-f547f8a0-fffa-48a7-9162-bf7354f74b19",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"baseFesta\": {\r\n    \"tipoFesta\": \"Show do Claudinho e do Bochecha\",\r\n    \"drinksSelecionados\": [\r\n      {\r\n        \"id\": \"MOCK:idCerveja\",\r\n        \"nome\": \"Caipirinha\",\r\n        \"descricao\": \"Drink de cachaça com limão\"\r\n      }\r\n    ]\r\n  },\r\n  \"infosContratante\": {\r\n    \"nome\": \"Hozier\",\r\n    \"sobrenome\": \"Hozier\",\r\n    \"telefone\": \"(24) 999728186\",\r\n    \"email\": \"gfernandes@ges.inatel.br\",\r\n    \"data\": \"2025-10-25\",\r\n    \"endereco\": \"Rua Coronel Francisco Palma\",\r\n    \"horarioInicio\": \"12:00:00\",\r\n    \"horarioFinal\": \"23:00:00\",\r\n    \"cep\": \"37540000\",\r\n    \"convidados\": \"100\"\r\n  },\r\n  \"opcionais\": {\r\n    \"shots\": {\r\n      \"additionalProp1\": 0,\r\n      \"additionalProp2\": 0,\r\n      \"additionalProp3\": 0\r\n    },\r\n    \"extras\": {\r\n      \"additionalProp1\": 0,\r\n      \"additionalProp2\": 0,\r\n      \"additionalProp3\": 0\r\n    },\r\n    \"baresAdicionais\": [\r\n      \"Bar muito bom mesmo\"\r\n    ]\r\n  },\r\n  \"preco\": 30000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Orcamento/front-create",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Orcamento",
+								"front-create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All pedidos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "843af4a9-722e-45cf-a441-b573864a5c3a",
+								"exec": [
+									"let dados = pm.response.json();\r",
+									"let id = pm.environment.get(\"idPedido\");\r",
+									"let pedido = dados.find(u => u.idPedido === id);\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains correct data\", function(){\r",
+									"\r",
+									"    pm.expect(pedido.idPedido).to.contain(\"p1\")\r",
+									"    pm.expect(pedido.status).to.equal(\"Pendente\")\r",
+									"    pm.expect(pedido.dataCriacao).to.equal(pm.environment.get(\"dataCadastro\"))\r",
+									"    pm.expect(pedido.orcamentoIdOrcamento).to.equal(pm.environment.get(\"idOrcamento\"))\r",
+									"\r",
+									"});\r",
+									"\r",
+									"pm.environment.set(\"idUsuario\", pedido.orcamentoUsuarioIdUsuario)\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-cc891876-bc7e-4c9a-9ee0-6cedd1b1553c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Pedido",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Pedido"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update pedido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "843af4a9-722e-45cf-a441-b573864a5c3a",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Success)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.eql(\"Pedido atualizado com sucesso.\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "3d480772-5e8c-42a8-bb9b-ecfebed650ee",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-26ef8d8e-0efa-4a8f-8f06-963576c413c6",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"total\": 15000.99,\r\n  \"status\": \"Aprovado\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Pedido/:idPedido/:idOrcamento/:idUsuario",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Pedido",
+								":idPedido",
+								":idOrcamento",
+								":idUsuario"
+							],
+							"variable": [
+								{
+									"key": "idPedido",
+									"value": "{{idPedido}}"
+								},
+								{
+									"key": "idOrcamento",
+									"value": "{{idOrcamento}}"
+								},
+								{
+									"key": "idUsuario",
+									"value": "{{idUsuario}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Specific pedido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "843af4a9-722e-45cf-a441-b573864a5c3a",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains correct data\", function(){\r",
+									"\r",
+									"    let pedido = pm.response.json();\r",
+									"\r",
+									"    pm.expect(pedido.idPedido).to.contain(\"p1\")\r",
+									"    pm.expect(pedido.status).to.equal(\"Aprovado\")\r",
+									"    pm.expect(pedido.dataCriacao).to.equal(pm.environment.get(\"dataCadastro\"))\r",
+									"    pm.expect(pedido.orcamentoIdOrcamento).to.equal(pm.environment.get(\"idOrcamento\"))\r",
+									"    pm.expect(pedido.total).to.equal(15001)\r",
+									"\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-161cb70e-caea-4d68-82b5-8b1b8fe47cec",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Pedido/:idPedido",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Pedido",
+								":idPedido"
+							],
+							"variable": [
+								{
+									"key": "idPedido",
+									"value": "{{idPedido}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Specific pedido Usuario",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "843af4a9-722e-45cf-a441-b573864a5c3a",
+								"exec": [
+									"let dados = pm.response.json();\r",
+									"let id = pm.environment.get(\"idPedido\");\r",
+									"let pedido = dados.find(u => u.idPedido === id);\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains correct data\", function(){\r",
+									"\r",
+									"    let idUsuario = pm.environment.get(\"idUsuario\")\r",
+									"\r",
+									"    pm.expect(pedido.orcamentoUsuarioIdUsuario).to.equal(idUsuario)\r",
+									"    pm.expect(pedido.idPedido).to.contain(\"p1\")\r",
+									"    pm.expect(pedido.status).to.equal(\"Aprovado\")\r",
+									"    pm.expect(pedido.total).to.equal(15001)\r",
+									"    pm.expect(pedido.dataCriacao).to.equal(pm.environment.get(\"dataCadastro\"))\r",
+									"    pm.expect(pedido.orcamentoIdOrcamento).to.equal(pm.environment.get(\"idOrcamento\"))\r",
+									"\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-6e843fe9-6522-42a5-b36e-bb014a626746",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Pedido/usuario/:idUsuario",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Pedido",
+								"usuario",
+								":idUsuario"
+							],
+							"variable": [
+								{
+									"key": "idUsuario",
+									"value": "{{idUsuario}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete existing pedido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "51d4bf08-6a6c-4806-9ce3-22791823fd28",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Success)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Pedido deletado com sucesso\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-ce7d9a48-7104-4019-bc15-40cec074fe0d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Pedido/:idPedido/:idOrcamento/:idUsuario",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Pedido",
+								":idPedido",
+								":idOrcamento",
+								":idUsuario"
+							],
+							"variable": [
+								{
+									"key": "idPedido",
+									"value": "{{idPedido}}"
+								},
+								{
+									"key": "idOrcamento",
+									"value": "{{idOrcamento}}"
+								},
+								{
+									"key": "idUsuario",
+									"value": "{{idUsuario}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete existing orcamento",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2e448eaf-d18c-49e8-a473-b8a3aef22d3f",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Success)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Orçamento deletado com sucesso\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-043e97a8-3d63-4b7e-b6af-947097fc748d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Orcamento/:idOrcamento/:idUsuario",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Orcamento",
+								":idOrcamento",
+								":idUsuario"
+							],
+							"variable": [
+								{
+									"key": "idOrcamento",
+									"value": "{{idOrcamento}}"
+								},
+								{
+									"key": "idUsuario",
+									"value": "{{idUsuario}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete non existing pedido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "51d4bf08-6a6c-4806-9ce3-22791823fd28",
+								"exec": [
+									"pm.test(\"Response status code is 404\", function(){\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Success)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Pedido não encontrado\");\r",
+									"});\r",
+									"\r",
+									"pm.environment.unset(\"idOrcamento\")\r",
+									"pm.environment.unset(\"idPedido\")\r",
+									"pm.environment.unset(\"idUsuario\")\r",
+									"pm.environment.unset(\"idItem\")\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-f5e23a7b-0643-41b9-8d49-9e09c9959c4a",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Pedido/:idPedido/:idOrcamento/:idUsuario",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Pedido",
+								":idPedido",
+								":idOrcamento",
+								":idUsuario"
+							],
+							"variable": [
+								{
+									"key": "idPedido",
+									"value": "{{idPedido}}"
+								},
+								{
+									"key": "idOrcamento",
+									"value": "{{idOrcamento}}"
+								},
+								{
+									"key": "idUsuario",
+									"value": "{{idUsuario}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "34776802-461c53fa-25f9-40b3-a51a-36f553954829"
+		}
+	]
+}
