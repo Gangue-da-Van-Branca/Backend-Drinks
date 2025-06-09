@@ -2143,7 +2143,76 @@
 		},
 		{
 			"name": "OrcamentoHasItem",
-			"item": [],
+			"item": [
+				{
+					"name": "All orcamentos Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "98815b35-a56e-4a33-bc95-f8967096d063",
+								"exec": [
+									"let dados = pm.response.json();\r",
+									"let id = pm.environment.get(\"idOrcamento\");\r",
+									"let orcamento = dados.find(u => u.idOrcamento === id);\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Find the orcamento by id and return the idUsuario\", function (){\r",
+									"\r",
+									"    pm.expect(orcamento).to.not.be.undefined;\r",
+									"    pm.environment.set(\"idUsuario\", orcamento.idUsuario);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "63256d5d-35c9-4dd7-9ceb-1eac027bb27a",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-e52975b2-76ec-4392-ba7f-c966377e0f08",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Orcamento",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Orcamento"
+							]
+						}
+					},
+					"response": []
+				}
+			],
 			"id": "34776802-fbb1557c-ebfe-4dfe-b607-a032b9f49279"
 		}
 	]
