@@ -2201,12 +2201,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/Orcamento",
+							"raw": "{{url}}/OrcamentoHasItem",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
-								"Orcamento"
+								"OrcamentoHasItem"
 							]
 						}
 					},
