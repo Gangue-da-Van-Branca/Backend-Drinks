@@ -2145,7 +2145,7 @@
 			"name": "OrcamentoHasItem",
 			"item": [
 				{
-					"name": "Orcamento Copy",
+					"name": "Linkar item e orcamento",
 					"event": [
 						{
 							"listen": "test",
@@ -2205,7 +2205,7 @@
 					"response": []
 				},
 				{
-					"name": "All OrHasI",
+					"name": "All links",
 					"event": [
 						{
 							"listen": "test",
