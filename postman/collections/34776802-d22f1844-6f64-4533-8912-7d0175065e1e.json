@@ -79,76 +79,6 @@
 					"response": []
 				},
 				{
-					"name": "Register new user Copy",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "20aa61bb-0c17-430b-8fcc-fa331b10af42",
-								"exec": [
-									"pm.test(\"Response status code is 200\", function(){\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Response message is correct (Sucess)\", function(){\r",
-									"    let resposta = pm.response.text();\r",
-									"    pm.expect(resposta).to.contain(\"Usuário registrado com sucesso\");\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "d28c3d4b-342d-4ff4-ad5c-b1f8823e9373",
-								"exec": [
-									"//Pegando a data de cadastro para comparação futura\r",
-									"let data = new Date();\r",
-									"\r",
-									"//data.setHours(data.getHours() - 3); //Fuso horário\r",
-									"pm.environment.set(\"dataCadastro\", data.toISOString().split('T')[0]); //Pegando só a data"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"id": "34776802-f93be59e-03f9-4ef2-a744-d174b364b388",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"Nome\": \"Gabriel\",\r\n    \"Sobrenome\": \"Alves Fernandes\",\r\n    \"Email\": \"gfernandes@ges.inatel.br\",\r\n    \"Telefone\": \"(24) 99999-9999\",\r\n    \"Senha\": \"VascoDaGama123@\",\r\n    \"Tipo\": \"admin\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/Auth/register",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"Auth",
-								"register"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Register same user",
 					"event": [
 						{
@@ -2214,6 +2144,76 @@
 		{
 			"name": "OrcamentoHasItem",
 			"item": [
+				{
+					"name": "Register new user Link",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "20aa61bb-0c17-430b-8fcc-fa331b10af42",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Sucess)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Usuário registrado com sucesso\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d28c3d4b-342d-4ff4-ad5c-b1f8823e9373",
+								"exec": [
+									"//Pegando a data de cadastro para comparação futura\r",
+									"let data = new Date();\r",
+									"\r",
+									"//data.setHours(data.getHours() - 3); //Fuso horário\r",
+									"pm.environment.set(\"dataCadastro\", data.toISOString().split('T')[0]); //Pegando só a data"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-f93be59e-03f9-4ef2-a744-d174b364b388",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Nome\": \"Gabriel\",\r\n    \"Sobrenome\": \"Alves Fernandes\",\r\n    \"Email\": \"gfernandes@ges.inatel.br\",\r\n    \"Telefone\": \"(24) 99999-9999\",\r\n    \"Senha\": \"VascoDaGama123@\",\r\n    \"Tipo\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Auth/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "Linkar item e orcamento",
 					"event": [
