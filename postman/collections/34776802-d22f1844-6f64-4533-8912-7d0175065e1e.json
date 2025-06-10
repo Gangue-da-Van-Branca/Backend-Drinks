@@ -2215,6 +2215,66 @@
 					"response": []
 				},
 				{
+					"name": "Register new item Link",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "20aa61bb-0c17-430b-8fcc-fa331b10af42",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Sucess)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Item cadastrado com sucesso\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-0c32a9cc-310f-474a-9bba-150d68560347",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"Nome\": \"Cerveja\",\r\n        \"Descricao\": \"Cerveja Brahma 330mL\",\r\n        \"Preco\": 8.0,\r\n        \"Tipo\": \"Bebida Alcóolica\"\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Item",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Linkar item e orcamento",
 					"event": [
 						{
