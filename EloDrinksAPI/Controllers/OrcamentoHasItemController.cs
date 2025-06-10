@@ -86,8 +86,11 @@ public class OrcamentoHasItemController : ControllerBase
             var itemExiste = await _context.Items
                 .AnyAsync(i => i.IdItem == dto.ItemIdItem);
 
-            if (!orcamentoExiste || !itemExiste)
-                return BadRequest("Orçamento ou Item não encontrado.");
+            if (!orcamentoExiste)
+                return NotFound("Orçamento não encontrado.");
+
+            if(!itemExiste)
+                return NotFound("Item não encontrado.");
 
             var existe = await _context.OrcamentoHasItems.AnyAsync(e =>
                 e.OrcamentoIdOrcamento == dto.OrcamentoIdOrcamento &&
@@ -136,7 +139,7 @@ public class OrcamentoHasItemController : ControllerBase
 
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("Associação atualizada com sucesso.");
         }
         catch (Exception ex)
         {
@@ -160,7 +163,7 @@ public class OrcamentoHasItemController : ControllerBase
             _context.OrcamentoHasItems.Remove(entity);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("Associação deletada com sucesso.");
         }
         catch (Exception ex)
         {
