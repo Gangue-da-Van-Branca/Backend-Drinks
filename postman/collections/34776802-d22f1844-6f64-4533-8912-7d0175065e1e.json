@@ -2255,7 +2255,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\r\n    {\r\n        \"Nome\": \"Cerveja\",\r\n        \"Descricao\": \"Cerveja Brahma 330mL\",\r\n        \"Preco\": 8.0,\r\n        \"Tipo\": \"Bebida Alcóolica\"\r\n    }\r\n]",
+							"raw": "[\r\n    {\r\n    \"idItem\": \"i102e4jtFekcSrv9dR\",\r\n    \"nome\": \"Mini milk-shakes de Oreo\",\r\n    \"descricao\": \"teste\",\r\n    \"preco\": 20,\r\n    \"tipo\": \"Shot\"\r\n  }\r\n]",
 							"options": {
 								"raw": {
 									"language": "json"
