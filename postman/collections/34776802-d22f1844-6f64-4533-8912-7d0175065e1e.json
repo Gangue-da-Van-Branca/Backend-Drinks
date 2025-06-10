@@ -2145,6 +2145,66 @@
 			"name": "OrcamentoHasItem",
 			"item": [
 				{
+					"name": "Orcamento Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f1ae4239-6973-42be-b462-8ff72260ed56",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let dados = pm.response.json();\r",
+									"pm.environment.set(\"idOrcamento\", dados.idOrcamento);\r",
+									"pm.environment.set(\"idPedido\", dados.idPedido);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-8912c183-69cb-4ef8-b82e-2f8c8c5b8142",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"baseFesta\": {\r\n    \"tipoFesta\": \"Show do Claudinho e do Bochecha\",\r\n    \"drinksSelecionados\": [\r\n      {\r\n        \"id\": \"MOCK:idCerveja\",\r\n        \"nome\": \"Caipirinha\",\r\n        \"descricao\": \"Drink de cachaça com limão\"\r\n      }\r\n    ]\r\n  },\r\n  \"infosContratante\": {\r\n    \"nome\": \"Hozier\",\r\n    \"sobrenome\": \"Hozier\",\r\n    \"telefone\": \"(24) 999728186\",\r\n    \"email\": \"gfernandes@ges.inatel.br\",\r\n    \"data\": \"2025-10-25\",\r\n    \"endereco\": \"Rua Coronel Francisco Palma\",\r\n    \"horarioInicio\": \"12:00:00\",\r\n    \"horarioFinal\": \"23:00:00\",\r\n    \"cep\": \"37540000\",\r\n    \"convidados\": \"100\"\r\n  },\r\n  \"opcionais\": {\r\n    \"shots\": {\r\n      \"additionalProp1\": 0,\r\n      \"additionalProp2\": 0,\r\n      \"additionalProp3\": 0\r\n    },\r\n    \"extras\": {\r\n      \"additionalProp1\": 0,\r\n      \"additionalProp2\": 0,\r\n      \"additionalProp3\": 0\r\n    },\r\n    \"baresAdicionais\": [\r\n      \"Bar muito bom mesmo\"\r\n    ]\r\n  },\r\n  \"preco\": 30000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Orcamento/front-create",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Orcamento",
+								"front-create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "All OrHasI",
 					"event": [
 						{
