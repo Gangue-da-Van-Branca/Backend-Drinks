@@ -6,7 +6,7 @@ name: API tests using Postman CLI, Build and deploy ASP.Net Core app to Azure We
 on:
   push:
     branches:
-      - main
+      - cors
   workflow_dispatch:
 
 jobs:
