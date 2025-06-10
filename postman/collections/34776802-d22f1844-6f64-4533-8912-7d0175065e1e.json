@@ -2192,13 +2192,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/Orcamento/front-create",
+							"raw": "{{url}}/OrcamentoHasItem",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
-								"Orcamento",
-								"front-create"
+								"OrcamentoHasItem"
 							]
 						}
 					},
