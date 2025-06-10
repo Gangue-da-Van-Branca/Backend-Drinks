@@ -2406,7 +2406,20 @@
 		},
 		{
 			"name": "Utils",
-			"item": [],
+			"item": [
+				{
+					"name": "Itens Json",
+					"id": "34776802-6d800831-53ee-417b-a947-a929bbd09a0c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			],
 			"id": "34776802-7b139291-59dd-43e7-8122-6b89b9832bf0"
 		}
 	]
