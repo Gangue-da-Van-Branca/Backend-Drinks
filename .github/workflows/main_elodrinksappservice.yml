@@ -12,6 +12,7 @@ on:
 jobs:
   testRunner:
     runs-on: ubuntu-latest
+    needs: build
     steps: 
       - uses: actions/checkout@v4
       - name: Install Postamn CLI
@@ -75,7 +76,7 @@ jobs:
 
   deploy:
     runs-on: windows-latest
-    needs: build
+    needs: testRunner
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
