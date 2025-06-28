@@ -1,11 +1,15 @@
 using EloDrinksAPI.DTOs.usuario;
 using EloDrinksAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace EloDrinksAPI.Controllers
 {
+    /// <summary>
+    /// Gerencia os dados dos usuários.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class UsuarioController : ControllerBase
@@ -17,8 +21,12 @@ namespace EloDrinksAPI.Controllers
             _context = context;
         }
 
-        // GET: /Usuario
+        /// <summary>
+        /// Busca todos os usuários do sistema (Apenas Admin).
+        /// </summary>
         [HttpGet]
+        [Authorize(Roles = "admin")]
+        [ProducesResponseType(typeof(IEnumerable<UsuarioResponseDto>), 200)]
         public async Task<ActionResult<IEnumerable<UsuarioResponseDto>>> GetUsuarios()
         {
             try
@@ -32,8 +40,14 @@ namespace EloDrinksAPI.Controllers
             }
         }
 
-        // GET: /Usuario/id
+        /// <summary>
+        /// Busca um usuário específico pelo seu ID (Requer autenticação).
+        /// </summary>
+        /// <param name="id">O ID do usuário.</param>
         [HttpGet("{id}")]
+        [Authorize(Roles = "user,admin")]
+        [ProducesResponseType(typeof(UsuarioResponseDto), 200)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult<UsuarioResponseDto>> GetUsuario(string id)
         {
             try
@@ -50,32 +64,18 @@ namespace EloDrinksAPI.Controllers
             }
         }
 
-        // POST: api/Usuario
-        [HttpPost]
-        public async Task<ActionResult<UsuarioResponseDto>> PostUsuario([FromBody] CreateUsuarioDto dto)
-        {
-            try
-            {
-                var usuario = UsuarioMapper.ToEntity(dto);
-
-                usuario.DataCadastro = DateOnly.FromDateTime(DateTime.Today);
-
-                _context.Usuarios.Add(usuario);
-                await _context.SaveChangesAsync();
-
-                var usuarioResponse = UsuarioMapper.ToDTO(usuario);
-                return CreatedAtAction(nameof(GetUsuario), new { id = usuario.IdUsuario }, usuarioResponse);
-            }
-            catch (DbUpdateException ex)
-            {
-                var inner = ex.InnerException?.Message;
-                return StatusCode(500, $"Erro ao criar usuário: {ex.Message} - Inner: {inner}");
-            }
-
-        }
-
-        // PUT: /Usuario/id
+        /// <summary>
+        /// Atualiza os dados de um usuário (Requer autenticação).
+        /// </summary>
+        /// <remarks>
+        /// Um usuário pode atualizar seus próprios dados. Um admin pode atualizar os dados de qualquer usuário.
+        /// </remarks>
+        /// <param name="id">O ID do usuário a ser atualizado.</param>
+        /// <param name="dto">Os novos dados para o usuário.</param>
         [HttpPut("{id}")]
+        [Authorize(Roles = "user,admin")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> PutUsuario(string id, [FromBody] UpdateUsuarioDto dto)
         {
             try
@@ -99,8 +99,14 @@ namespace EloDrinksAPI.Controllers
             }
         }
 
-        // DELETE: /Usuario/id
+        /// <summary>
+        /// Exclui um usuário do sistema (Apenas Admin).
+        /// </summary>
+        /// <param name="id">O ID do usuário a ser excluído.</param>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> DeleteUsuario(string id)
         {
             try

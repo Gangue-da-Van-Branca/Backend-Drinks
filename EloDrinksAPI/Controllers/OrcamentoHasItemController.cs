@@ -3,9 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using EloDrinksAPI.Models;
 using EloDrinksAPI.Mappers;
 using EloDrinksAPI.DTOs.orcamentoHasItem;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EloDrinksAPI.Controllers;
 
+/// <summary>
+/// Gerencia a relação entre orçamentos e os itens que eles contêm.
+/// </summary>
 [Route("[controller]")]
 [ApiController]
 public class OrcamentoHasItemController : ControllerBase
@@ -17,7 +21,11 @@ public class OrcamentoHasItemController : ControllerBase
         _context = context;
     }
 
+    /// <summary>
+    /// Busca todas as associações de itens e orçamentos (Apenas Admin).
+    /// </summary>
     [HttpGet]
+    [Authorize(Roles = "admin")]
     public async Task<ActionResult<IEnumerable<OrcamentoHasItemResponseDto>>> GetAll()
     {
         try
@@ -35,7 +43,13 @@ public class OrcamentoHasItemController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Busca uma associação específica entre um orçamento e um item (Requer autenticação).
+    /// </summary>
+    /// <param name="orcamentoId">ID do orçamento.</param>
+    /// <param name="itemId">ID do item.</param>
     [HttpGet("{orcamentoId}/{itemId}")]
+    [Authorize(Roles = "user,admin")]
     public async Task<ActionResult<OrcamentoHasItemResponseDto>> Get(string orcamentoId, string itemId)
     {
         try
@@ -57,7 +71,12 @@ public class OrcamentoHasItemController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Busca todos os itens de um orçamento específico (Requer autenticação).
+    /// </summary>
+    /// <param name="orcamentoId">ID do orçamento.</param>
     [HttpGet("Orcamento/{orcamentoId}")]
+    [Authorize(Roles = "user,admin")]
     public async Task<ActionResult<IEnumerable<OrcamentoHasItemResponseDto>>> GetByOrcamento(string orcamentoId)
     {
         try
@@ -76,7 +95,11 @@ public class OrcamentoHasItemController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Associa um novo item a um orçamento (Requer autenticação).
+    /// </summary>
     [HttpPost]
+    [Authorize(Roles = "user,admin")]
     public async Task<ActionResult<OrcamentoHasItemResponseDto>> Post(CreateOrcamentoHasItemDto dto)
     {
         try
@@ -89,7 +112,7 @@ public class OrcamentoHasItemController : ControllerBase
             if (!orcamentoExiste)
                 return NotFound("Orçamento não encontrado.");
 
-            if(!itemExiste)
+            if (!itemExiste)
                 return NotFound("Item não encontrado.");
 
             var existe = await _context.OrcamentoHasItems.AnyAsync(e =>
@@ -103,7 +126,6 @@ public class OrcamentoHasItemController : ControllerBase
             _context.OrcamentoHasItems.Add(entity);
             await _context.SaveChangesAsync();
 
-            // Recarregar com navegação
             var carregado = await _context.OrcamentoHasItems
                 .Include(o => o.ItemIdItemNavigation)
                 .FirstAsync(o =>
@@ -122,7 +144,11 @@ public class OrcamentoHasItemController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Atualiza uma associação (ex: quantidade) entre item e orçamento (Apenas Admin).
+    /// </summary>
     [HttpPut("{orcamentoId}/{itemId}")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Put(string orcamentoId, string itemId, UpdateOrcamentoHasItemDto dto)
     {
         try
@@ -147,7 +173,11 @@ public class OrcamentoHasItemController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Remove um item de um orçamento (Apenas Admin).
+    /// </summary>
     [HttpDelete("{orcamentoId}/{itemId}")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Delete(string orcamentoId, string itemId)
     {
         try

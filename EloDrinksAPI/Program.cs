@@ -8,37 +8,30 @@ using System.Security.Claims;
 using Microsoft.OpenApi.Models;
 using EloDrinksAPI.Settings;
 using EloDrinksAPI.Services;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuração dos serviços de e-mail.
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddScoped<IEmailService, EmailService>();
 
-// Carrega variáveis de ambiente do arquivo .env (ótimo para desenvolvimento local).
 DotNetEnv.Env.Load();
 
-// Lê a connection string a partir das variáveis de ambiente.
 var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
 
-// Adiciona o DbContext com MySQL, especificando a versão manualmente para evitar erros de conexão na inicialização.
 builder.Services.AddDbContext<ElodrinkContext>(options =>
 {
-    var serverVersion = new MySqlServerVersion(new Version(8, 0, 0)); // Especifica a versão do MySQL para evitar auto-detecção.
+    var serverVersion = new MySqlServerVersion(new Version(8, 0, 0));
     options.UseMySql(connectionString, serverVersion);
 });
 
-// Adiciona os controllers e outras configurações de serviços.
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-
-// Configura o JsonSerializer para ignorar ciclos de referência.
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
-// Configura o CORS para permitir requisições do frontend, lendo a URL de uma variável de ambiente.
+builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
@@ -52,7 +45,6 @@ builder.Services.AddCors(options =>
         });
 });
 
-// Validação da chave JWT para garantir que a aplicação não inicie com uma chave insegura.
 var jwtKey = Environment.GetEnvironmentVariable("Jwt__Key");
 if (string.IsNullOrEmpty(jwtKey))
 {
@@ -60,7 +52,6 @@ if (string.IsNullOrEmpty(jwtKey))
 }
 var key = Encoding.ASCII.GetBytes(jwtKey);
 
-// Configuração da autenticação JWT.
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -80,21 +71,21 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Configuração do Swagger com suporte para autorização via token Bearer.
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddSwaggerGen(options =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "EloDrinksAPI", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "EloDrinks API", Version = "v1" });
 
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = @"JWT Authorization header usando o esquema Bearer. Exemplo: 'Bearer {seu token}'",
         Name = "Authorization",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        Description = "Insira o token JWT desta forma: Bearer {seu_token}"
     });
 
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -103,19 +94,19 @@ builder.Services.AddSwaggerGen(c =>
                 {
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
-                },
-                Scheme = "oauth2",
-                Name = "Bearer",
-                In = ParameterLocation.Header
+                }
             },
-            new List<string>()
+            new string[] {}
         }
     });
+
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
+    options.IncludeXmlComments(xmlPath);
 });
 
 var app = builder.Build();
 
-// Bloco de código para aplicar migrações do banco de dados na inicialização com lógica de retentativa.
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -158,17 +149,8 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configuração do pipeline de requisições HTTP.
-// Garante que a documentação do Swagger só esteja disponível no ambiente de desenvolvimento.
-// if (app.Environment.IsDevelopment())
-// {
-//     app.UseSwagger();
-//     app.UseSwaggerUI();
-// }
-
 app.UseSwagger();
 app.UseSwaggerUI();
-
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
 app.UseAuthentication();

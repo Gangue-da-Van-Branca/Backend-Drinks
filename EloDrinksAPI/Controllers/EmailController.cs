@@ -1,11 +1,13 @@
 using EloDrinksAPI.DTOs.email;
 using EloDrinksAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace EloDrinksAPI.Controllers
 {
-
+    /// <summary>
+    /// Endpoint para envio de e-mails genéricos.
+    /// </summary>
     [ApiController]
     [Route("email")]
     public class EmailController : ControllerBase
@@ -19,7 +21,15 @@ namespace EloDrinksAPI.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Envia um e-mail através do serviço configurado.
+        /// </summary>
+        /// <param name="request">Dados do e-mail (destinatário, assunto, corpo).</param>
+        /// <response code="200">E-mail enviado com sucesso.</response>
+        /// <response code="400">Dados da requisição inválidos.</response>
+        /// <response code="500">Ocorreu um erro interno ao tentar enviar o e-mail.</response>
         [HttpPost("mensagem")]
+        [AllowAnonymous]
         public async Task<IActionResult> SendEmail([FromBody] EmailRequestDto request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -36,5 +46,4 @@ namespace EloDrinksAPI.Controllers
             }
         }
     }
-
 }

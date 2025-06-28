@@ -4,12 +4,16 @@ using System.Threading.Tasks;
 using EloDrinksAPI.DTOs.item;
 using EloDrinksAPI.Mappers;
 using EloDrinksAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EloDrinksAPI.Services;
 
 namespace EloDrinksAPI.Controllers;
 
+/// <summary>
+/// Gerencia o catálogo de itens (drinks, shots, bares, opcionais, etc.).
+/// </summary>
 [Route("[controller]")]
 [ApiController]
 public class ItemController : ControllerBase
@@ -21,7 +25,13 @@ public class ItemController : ControllerBase
         _context = context;
     }
 
+    /// <summary>
+    /// Busca a lista completa de itens disponíveis.
+    /// </summary>
+    /// <returns>Uma coleção de todos os itens.</returns>
     [HttpGet]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(IEnumerable<ItemResponseDto>), 200)]
     public async Task<ActionResult<IEnumerable<ItemResponseDto>>> GetItems()
     {
         try
@@ -35,7 +45,15 @@ public class ItemController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Busca um item específico pelo seu ID.
+    /// </summary>
+    /// <param name="id">O ID único do item.</param>
+    /// <returns>Os dados do item solicitado.</returns>
     [HttpGet("{id}")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(ItemResponseDto), 200)]
+    [ProducesResponseType(404)]
     public async Task<ActionResult<ItemResponseDto>> GetItem(string id)
     {
         try
@@ -52,7 +70,15 @@ public class ItemController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Cria um ou mais itens em lote (Apenas Admin).
+    /// </summary>
+    /// <param name="dtos">Uma lista de objetos com os dados dos itens a serem criados.</param>
     [HttpPost()]
+    [Authorize(Roles = "admin")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(typeof(string), 400)]
+    [ProducesResponseType(401)]
     public async Task<ActionResult<IEnumerable<ItemResponseDto>>> PostItensEmLote(List<CreateItemDto> dtos)
     {
         try
@@ -61,7 +87,7 @@ public class ItemController : ControllerBase
 
             foreach (var dto in dtos)
             {
-                if(_context.Items.Any(i => i.Nome == dto.Nome))
+                if (_context.Items.Any(i => i.Nome == dto.Nome))
                 {
                     return BadRequest($"Item com nome '{dto.Nome}' já existe.");
                 }
@@ -84,7 +110,16 @@ public class ItemController : ControllerBase
     }
 
 
+    /// <summary>
+    /// Atualiza os dados de um item existente (Apenas Admin).
+    /// </summary>
+    /// <param name="id">O ID do item a ser atualizado.</param>
+    /// <param name="dto">Os novos dados para o item.</param>
     [HttpPut("{id}")]
+    [Authorize(Roles = "admin")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(401)]
     public async Task<IActionResult> PutItem(string id, UpdateItemDto dto)
     {
         try
@@ -112,7 +147,15 @@ public class ItemController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Exclui um item do sistema (Apenas Admin).
+    /// </summary>
+    /// <param name="id">O ID do item a ser excluído.</param>
     [HttpDelete("{id}")]
+    [Authorize(Roles = "admin")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(401)]
     public async Task<IActionResult> DeleteItem(string id)
     {
         try

@@ -3,9 +3,13 @@ using EloDrinksAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EloDrinksAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EloDrinksAPI.Controllers
 {
+    /// <summary>
+    /// Gerencia os pedidos gerados a partir dos orçamentos.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class PedidoController : ControllerBase
@@ -17,7 +21,11 @@ namespace EloDrinksAPI.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Busca todos os pedidos do sistema (Apenas Admin).
+        /// </summary>
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<IEnumerable<PedidoResponseDto>>> GetPedidos()
         {
             try
@@ -31,7 +39,12 @@ namespace EloDrinksAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Busca um pedido específico pelo seu ID (Requer autenticação).
+        /// </summary>
+        /// <param name="id">O ID do pedido.</param>
         [HttpGet("{id}")]
+        [Authorize(Roles = "user,admin")]
         public async Task<ActionResult<PedidoResponseDto>> GetPedido(string id)
         {
             try
@@ -50,7 +63,14 @@ namespace EloDrinksAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Cria um novo pedido manualmente (Apenas Admin).
+        /// </summary>
+        /// <remarks>
+        /// A criação de pedidos pelo cliente é feita automaticamente via OrçamentoController.
+        /// </remarks>
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<PedidoResponseDto>> PostPedido([FromBody] CreatePedidoDto dto)
         {
             try
@@ -73,7 +93,11 @@ namespace EloDrinksAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Atualiza um pedido existente (Apenas Admin).
+        /// </summary>
         [HttpPut("{idPedido}/{idOrcamento}/{idUsuario}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> PutPedido(string idPedido, string idOrcamento, string idUsuario, [FromBody] UpdatePedidoDto dto)
         {
             try
@@ -97,7 +121,11 @@ namespace EloDrinksAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Deleta um pedido (Apenas Admin).
+        /// </summary>
         [HttpDelete("{idPedido}/{orcamentoId}/{usuarioId}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeletePedido(string idPedido, string orcamentoId, string usuarioId)
         {
             try
@@ -121,7 +149,12 @@ namespace EloDrinksAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Busca todos os pedidos de um usuário específico (Requer autenticação).
+        /// </summary>
+        /// <param name="id">O ID do usuário.</param>
         [HttpGet("usuario/{id}")]
+        [Authorize(Roles = "user,admin")]
         public async Task<ActionResult<IEnumerable<PedidoResponseDto>>> GetPedidosByUsuario(string id)
         {
             try

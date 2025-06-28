@@ -14,9 +14,13 @@ using EloDrinksAPI.DTOs.usuario;
 using EloDrinksAPI.Services;
 using EloDrinksAPI.DTOs.email;
 using EloDrinksAPI.DTOs.forgotPassword;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EloDrinksAPI.Controllers
 {
+    /// <summary>
+    /// Gerencia a autenticação, registro e recuperação de senha dos usuários.
+    /// </summary>
     [Route("[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -32,7 +36,16 @@ namespace EloDrinksAPI.Controllers
             _emailService = emailService;
         }
 
+        /// <summary>
+        /// Registra um novo usuário no sistema.
+        /// </summary>
+        /// <param name="usuarioDTO">Dados para a criação do novo usuário.</param>
+        /// <response code="200">Usuário registrado com sucesso.</response>
+        /// <response code="400">O e-mail fornecido já está em uso.</response>
         [HttpPost("register")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 400)]
         public async Task<IActionResult> Register([FromBody] CreateUsuarioDto usuarioDTO)
         {
             if (_context.Usuarios.Any(u => u.Email == usuarioDTO.Email))
@@ -59,14 +72,23 @@ namespace EloDrinksAPI.Controllers
         }
 
 
+        /// <summary>
+        /// Autentica um usuário e retorna um token JWT.
+        /// </summary>
+        /// <param name="login">Credenciais de login (email e senha).</param>
+        /// <returns>Um token JWT, a role do usuário e seu ID.</returns>
+        /// <response code="200">Login bem-sucedido. Retorna o token, role e ID do usuário.</response>
+        /// <response code="401">Credenciais inválidas.</response>
         [HttpPost("login")]
+        [AllowAnonymous]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(string), 401)]
         public IActionResult Login([FromBody] LoginModel login)
         {
             var user = _context.Usuarios.SingleOrDefault(x => x.Email == login.Email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(login.Senha, user.Senha))
                 return Unauthorized("Credenciais inválidas");
 
-            // verifica se a chave JWT está configurada
             var jwtKey = Environment.GetEnvironmentVariable("Jwt__Key");
             if (string.IsNullOrEmpty(jwtKey))
                 throw new InvalidOperationException("A chave JWT não foi configurada");
@@ -82,7 +104,7 @@ namespace EloDrinksAPI.Controllers
                 {
             new Claim(ClaimTypes.NameIdentifier, user.IdUsuario.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, role) // role convertida vem pra ca
+            new Claim(ClaimTypes.Role, role)
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -98,7 +120,16 @@ namespace EloDrinksAPI.Controllers
             });
         }
 
+        /// <summary>
+        /// Inicia o processo de recuperação de senha.
+        /// </summary>
+        /// <remarks>
+        /// Sempre retorna uma mensagem de sucesso para não revelar se um e-mail está ou não cadastrado.
+        /// </remarks>
+        /// <param name="dto">Objeto contendo o e-mail para recuperação.</param>
+        /// <response code="200">Instruções de recuperação enviadas (se o e-mail existir).</response>
         [HttpPost("forgot-password")]
+        [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
         {
             var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == dto.Email);
@@ -106,7 +137,7 @@ namespace EloDrinksAPI.Controllers
             if (user == null)
                 return Ok("Se o e-mail estiver cadastrado, enviaremos instruções para redefinir a senha");
 
-            var token = Guid.NewGuid().ToString(); // <= geracao do token
+            var token = Guid.NewGuid().ToString();
 
             var resetToken = new PasswordResetToken
             {
@@ -118,8 +149,6 @@ namespace EloDrinksAPI.Controllers
             _context.PasswordResetTokens.Add(resetToken);
             await _context.SaveChangesAsync();
 
-            // ============== IMPORTANTE ==============
-            // Link de redefinição de senha, vai ter que mudar qnd tiver deployado
             var resetLink = $"https://seudominio.com/reset-password?token={token}";
 
             var emailRequest = new EmailRequestDto
@@ -140,8 +169,14 @@ namespace EloDrinksAPI.Controllers
             return Ok("Se o e-mail estiver cadastrado, enviaremos instruções para redefinir a senha!");
         }
 
-        // ve se o token ainda é valido antes de ter que digitar a senha
+        /// <summary>
+        /// Valida um token de recuperação de senha.
+        /// </summary>
+        /// <param name="token">O token recebido por e-mail.</param>
+        /// <response code="200">O token é válido e pode ser usado para redefinir a senha.</response>
+        /// <response code="400">O token é inválido ou já expirou.</response>
         [HttpGet("validate-resetPassword-token")]
+        [AllowAnonymous]
         public async Task<IActionResult> ValidateResetToken([FromQuery] string token)
         {
             var tokenEntry = await _context.PasswordResetTokens
@@ -153,7 +188,14 @@ namespace EloDrinksAPI.Controllers
             return Ok("Token válido");
         }
 
+        /// <summary>
+        /// Redefine a senha do usuário utilizando um token válido.
+        /// </summary>
+        /// <param name="dto">Objeto contendo o token e a nova senha.</param>
+        /// <response code="200">Senha redefinida com sucesso.</response>
+        /// <response code="400">O token é inválido ou já expirou.</response>
         [HttpPost("reset-password")]
+        [AllowAnonymous]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
         {
             var tokenEntry = await _context.PasswordResetTokens
@@ -168,13 +210,10 @@ namespace EloDrinksAPI.Controllers
 
             user.Senha = BCrypt.Net.BCrypt.HashPassword(dto.NovaSenha);
 
-            _context.PasswordResetTokens.Remove(tokenEntry); // <= invalidacao do token
+            _context.PasswordResetTokens.Remove(tokenEntry);
             await _context.SaveChangesAsync();
 
             return Ok("Senha redefinida com sucesso.");
         }
-
-
     }
-
 }
