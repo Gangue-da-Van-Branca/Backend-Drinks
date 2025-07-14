@@ -3,9 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using EloDrinksAPI.Models;
 using EloDrinksAPI.Mappers;
 using EloDrinksAPI.DTOs.orcamentoHasItem;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EloDrinksAPI.Controllers;
 
+/// <summary>
+/// Gerencia a relação entre orçamentos e os itens que eles contêm.
+/// </summary>
 [Route("[controller]")]
 [ApiController]
 public class OrcamentoHasItemController : ControllerBase
@@ -17,6 +21,9 @@ public class OrcamentoHasItemController : ControllerBase
         _context = context;
     }
 
+    /// <summary>
+    /// Busca todas as associações de itens e orçamentos.
+    /// </summary>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OrcamentoHasItemResponseDto>>> GetAll()
     {
@@ -35,6 +42,11 @@ public class OrcamentoHasItemController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Busca uma associação específica entre um orçamento e um item.
+    /// </summary>
+    /// <param name="orcamentoId">ID do orçamento.</param>
+    /// <param name="itemId">ID do item.</param>
     [HttpGet("{orcamentoId}/{itemId}")]
     public async Task<ActionResult<OrcamentoHasItemResponseDto>> Get(string orcamentoId, string itemId)
     {
@@ -57,6 +69,10 @@ public class OrcamentoHasItemController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Busca todos os itens de um orçamento específico.
+    /// </summary>
+    /// <param name="orcamentoId">ID do orçamento.</param>
     [HttpGet("Orcamento/{orcamentoId}")]
     public async Task<ActionResult<IEnumerable<OrcamentoHasItemResponseDto>>> GetByOrcamento(string orcamentoId)
     {
@@ -76,6 +92,9 @@ public class OrcamentoHasItemController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Associa um novo item a um orçamento.
+    /// </summary>
     [HttpPost]
     public async Task<ActionResult<OrcamentoHasItemResponseDto>> Post(CreateOrcamentoHasItemDto dto)
     {
@@ -86,8 +105,11 @@ public class OrcamentoHasItemController : ControllerBase
             var itemExiste = await _context.Items
                 .AnyAsync(i => i.IdItem == dto.ItemIdItem);
 
-            if (!orcamentoExiste || !itemExiste)
-                return BadRequest("Orçamento ou Item não encontrado.");
+            if (!orcamentoExiste)
+                return NotFound("Orçamento não encontrado.");
+
+            if (!itemExiste)
+                return NotFound("Item não encontrado.");
 
             var existe = await _context.OrcamentoHasItems.AnyAsync(e =>
                 e.OrcamentoIdOrcamento == dto.OrcamentoIdOrcamento &&
@@ -100,7 +122,6 @@ public class OrcamentoHasItemController : ControllerBase
             _context.OrcamentoHasItems.Add(entity);
             await _context.SaveChangesAsync();
 
-            // Recarregar com navegação
             var carregado = await _context.OrcamentoHasItems
                 .Include(o => o.ItemIdItemNavigation)
                 .FirstAsync(o =>
@@ -119,6 +140,9 @@ public class OrcamentoHasItemController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Atualiza uma associação (ex: quantidade) entre item e orçamento.
+    /// </summary>
     [HttpPut("{orcamentoId}/{itemId}")]
     public async Task<IActionResult> Put(string orcamentoId, string itemId, UpdateOrcamentoHasItemDto dto)
     {
@@ -136,7 +160,7 @@ public class OrcamentoHasItemController : ControllerBase
 
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("Associação atualizada com sucesso.");
         }
         catch (Exception ex)
         {
@@ -144,6 +168,9 @@ public class OrcamentoHasItemController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Remove um item de um orçamento.
+    /// </summary>
     [HttpDelete("{orcamentoId}/{itemId}")]
     public async Task<IActionResult> Delete(string orcamentoId, string itemId)
     {
@@ -160,7 +187,7 @@ public class OrcamentoHasItemController : ControllerBase
             _context.OrcamentoHasItems.Remove(entity);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("Associação deletada com sucesso.");
         }
         catch (Exception ex)
         {

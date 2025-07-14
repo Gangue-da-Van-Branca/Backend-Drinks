@@ -1113,7 +1113,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"baseFesta\": {\r\n    \"tipoFesta\": \"Show do Claudinho e do Bochecha\",\r\n    \"drinksSelecionados\": [\r\n      {\r\n        \"id\": \"MOCK:idCerveja\",\r\n        \"nome\": \"Caipirinha\",\r\n        \"descricao\": \"Drink de cachaça com limão\"\r\n      }\r\n    ]\r\n  },\r\n  \"infosContratante\": {\r\n    \"nome\": \"Hozier\",\r\n    \"sobrenome\": \"Hozier\",\r\n    \"telefone\": \"(24) 999728186\",\r\n    \"email\": \"gfernandes@ges.inatel.br\",\r\n    \"data\": \"2025-10-25\",\r\n    \"endereco\": \"Rua Coronel Francisco Palma\",\r\n    \"horarioInicio\": \"12:00:00\",\r\n    \"horarioFinal\": \"23:00:00\",\r\n    \"cep\": \"37540000\",\r\n    \"convidados\": \"100\"\r\n  },\r\n  \"opcionais\": {\r\n    \"shots\": {\r\n      \"additionalProp1\": 0,\r\n      \"additionalProp2\": 0,\r\n      \"additionalProp3\": 0\r\n    },\r\n    \"extras\": {\r\n      \"additionalProp1\": 0,\r\n      \"additionalProp2\": 0,\r\n      \"additionalProp3\": 0\r\n    },\r\n    \"baresAdicionais\": [\r\n      \"Bar muito bom mesmo\"\r\n    ]\r\n  },\r\n  \"preco\": 30000\r\n}",
+							"raw": "{\r\n    \"baseFesta\": {\r\n      \"tipoFesta\": \"Festa Teen\",\r\n      \"drinksSelecionados\": [\r\n        {\r\n          \"id\": \"i11LKQJlmumPn9lWih\",\r\n          \"nome\": \"Piña Descalada\",\r\n          \"descricao\": \"Suco de abacaxi, leite de coco, leite condensado e granulados coloridos\"\r\n        },\r\n        {\r\n          \"id\": \"i1FGlcg0VClkJIzj9B\",\r\n          \"nome\": \"Sunrise Splash\",\r\n          \"descricao\": \"Suco de laranja, xarope de grenadine e água com gás, guarnecido com uma rodela de laranja e cereja.\"\r\n        },\r\n        {\r\n          \"id\": \"i1GsP4QdH4eysBOQmJ\",\r\n          \"nome\": \"Lichai Paradise\",\r\n          \"descricao\": \"Água com gás, morangos simples, lichia, suco de limão e hortelã\"\r\n        },\r\n        {\r\n          \"id\": \"i1r2FZ2OSkPaOptUU3\",\r\n          \"nome\": \"Cirque Blue\",\r\n          \"descricao\": \"Curacao blue, suco de blueberry, amora, mix de limão, água com gás e algodão doce ou bala de fruta\"\r\n        },\r\n        {\r\n          \"id\": \"i1rz62dHMqSDa020XU\",\r\n          \"nome\": \"Classic Tonic\",\r\n          \"descricao\": \"Limão siciliano, xarope e tônica\"\r\n        },\r\n        {\r\n          \"id\": \"i1TE7rXG2YUqWMfkhY\",\r\n          \"nome\": \"Minty Green\",\r\n          \"descricao\": \"Chá verde gelado, suco de limão e xarope de hortelã, servido com folhas de hortelã fresca e uma rodela de limão.\"\r\n        },\r\n        {\r\n          \"id\": \"i1vCWQEQXxersroTVf\",\r\n          \"nome\": \"Berry Breeze\",\r\n          \"descricao\": \"Suco de cranberry e framboesa, um toque de limão e água tônica, decorado com frutas vermelhas frescas.\"\r\n        },\r\n        {\r\n          \"id\": \"i1Xy5Nn2uuMouEJXqh\",\r\n          \"nome\": \"Pink Lemonade\",\r\n          \"descricao\": \"Mix de limão, limão siciliano, goma ou gás e syrup de morango servido em tacinhas ou limonadas brilhantes\"\r\n        }\r\n      ]\r\n    },\r\n    \"infosContratante\": {\r\n      \"nome\": \"Pedro\",\r\n      \"sobrenome\": \"user\",\r\n      \"telefone\": \"231923817\",\r\n      \"email\": \"gfernandes@ges.inatel.br\",\r\n      \"data\": \"2025-06-18\",\r\n      \"endereco\": \"rua teste final 4\",\r\n      \"horarioInicio\": \"10:00\",\r\n      \"horarioFinal\": \"02:00\",\r\n      \"cep\": \"37410000\",\r\n      \"convidados\": \"100\"\r\n    },\r\n    \"opcionais\": {\r\n      \"shots\": {},\r\n      \"extras\": {},\r\n      \"baresAdicionais\": [\r\n        \"Ponche para Welcome Drink\"\r\n      ]\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2140,6 +2140,305 @@
 				}
 			],
 			"id": "34776802-461c53fa-25f9-40b3-a51a-36f553954829"
+		},
+		{
+			"name": "OrcamentoHasItem",
+			"item": [
+				{
+					"name": "Register new user Link",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "20aa61bb-0c17-430b-8fcc-fa331b10af42",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Sucess)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Usuário registrado com sucesso\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d28c3d4b-342d-4ff4-ad5c-b1f8823e9373",
+								"exec": [
+									"//Pegando a data de cadastro para comparação futura\r",
+									"let data = new Date();\r",
+									"\r",
+									"//data.setHours(data.getHours() - 3); //Fuso horário\r",
+									"pm.environment.set(\"dataCadastro\", data.toISOString().split('T')[0]); //Pegando só a data"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-f93be59e-03f9-4ef2-a744-d174b364b388",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Nome\": \"Gabriel\",\r\n    \"Sobrenome\": \"Alves Fernandes\",\r\n    \"Email\": \"gfernandes@ges.inatel.br\",\r\n    \"Telefone\": \"(24) 99999-9999\",\r\n    \"Senha\": \"VascoDaGama123@\",\r\n    \"Tipo\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Auth/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register new item Link",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "20aa61bb-0c17-430b-8fcc-fa331b10af42",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response message is correct (Sucess)\", function(){\r",
+									"    let resposta = pm.response.text();\r",
+									"    pm.expect(resposta).to.contain(\"Item cadastrado com sucesso\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-0c32a9cc-310f-474a-9bba-150d68560347",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n    \"idItem\": \"i102e4jtFekcSrv9dR\",\r\n    \"nome\": \"Mini milk-shakes de Oreo\",\r\n    \"descricao\": \"teste\",\r\n    \"preco\": 20,\r\n    \"tipo\": \"Shot\"\r\n  }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Item",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Linkar item e orcamento",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f1ae4239-6973-42be-b462-8ff72260ed56",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let dados = pm.response.json();\r",
+									"pm.environment.set(\"idOrcamento\", dados.idOrcamento);\r",
+									"pm.environment.set(\"idPedido\", dados.idPedido);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-8912c183-69cb-4ef8-b82e-2f8c8c5b8142",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"baseFesta\": {\r\n    \"tipoFesta\": \"Show do Claudinho e do Bochecha\",\r\n    \"drinksSelecionados\": [\r\n      {\r\n        \"id\": \"MOCK:idCerveja\",\r\n        \"nome\": \"Caipirinha\",\r\n        \"descricao\": \"Drink de cachaça com limão\"\r\n      }\r\n    ]\r\n  },\r\n  \"infosContratante\": {\r\n    \"nome\": \"Hozier\",\r\n    \"sobrenome\": \"Hozier\",\r\n    \"telefone\": \"(24) 999728186\",\r\n    \"email\": \"gfernandes@ges.inatel.br\",\r\n    \"data\": \"2025-10-25\",\r\n    \"endereco\": \"Rua Coronel Francisco Palma\",\r\n    \"horarioInicio\": \"12:00:00\",\r\n    \"horarioFinal\": \"23:00:00\",\r\n    \"cep\": \"37540000\",\r\n    \"convidados\": \"100\"\r\n  },\r\n  \"opcionais\": {\r\n    \"shots\": {\r\n      \"additionalProp1\": 0,\r\n      \"additionalProp2\": 0,\r\n      \"additionalProp3\": 0\r\n    },\r\n    \"extras\": {\r\n      \"additionalProp1\": 0,\r\n      \"additionalProp2\": 0,\r\n      \"additionalProp3\": 0\r\n    },\r\n    \"baresAdicionais\": [\r\n      \"Bar muito bom mesmo\"\r\n    ]\r\n  },\r\n  \"preco\": 30000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/OrcamentoHasItem",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"OrcamentoHasItem"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All links",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "98815b35-a56e-4a33-bc95-f8967096d063",
+								"exec": [
+									"let dados = pm.response.json();\r",
+									"let id = pm.environment.get(\"idOrcamento\");\r",
+									"let orcamento = dados.find(u => u.idOrcamento === id);\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Find the orcamento by id and return the idUsuario\", function (){\r",
+									"\r",
+									"    pm.expect(orcamento).to.not.be.undefined;\r",
+									"    pm.environment.set(\"idUsuario\", orcamento.idUsuario);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "63256d5d-35c9-4dd7-9ceb-1eac027bb27a",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "34776802-e52975b2-76ec-4392-ba7f-c966377e0f08",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/OrcamentoHasItem",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"OrcamentoHasItem"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "34776802-fbb1557c-ebfe-4dfe-b607-a032b9f49279"
+		},
+		{
+			"name": "Utils",
+			"item": [
+				{
+					"name": "Itens Json",
+					"id": "34776802-6d800831-53ee-417b-a947-a929bbd09a0c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  {\r\n    \"idItem\": \"i102e4jtFekcSrv9dR\",\r\n    \"nome\": \"Mini milk-shakes de Oreo\",\r\n    \"descricao\": \"teste\",\r\n    \"preco\": 20,\r\n    \"tipo\": \"Shot\"\r\n  },\r\n  {\r\n    \"idItem\": \"i11LKQJlmumPn9lWih\",\r\n    \"nome\": \"Piña Descalada\",\r\n    \"descricao\": \"Suco de abacaxi, leite de coco, leite condensado e granulados coloridos\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Soft Drink\"\r\n  },\r\n  {\r\n    \"idItem\": \"i12jepNzmTNiX2ZqKX\",\r\n    \"nome\": \"Whisky Black Label\",\r\n    \"descricao\": \"Whisky Black Label\",\r\n    \"preco\": 160,\r\n    \"tipo\": \"Opcional\"\r\n  },\r\n  {\r\n    \"idItem\": \"i12PlUD9t9CLhfIiAO\",\r\n    \"nome\": \"Paradise\",\r\n    \"descricao\": \" Vodka, água de coco, syrup de baunilha e raspas de coco desidratado\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Drink Alcoólico\"\r\n  },\r\n  {\r\n    \"idItem\": \"i13UBIY5xDOOXC7p36\",\r\n    \"nome\": \"Drink na Lâmpada\",\r\n    \"descricao\": \"Drink na Lâmpada\",\r\n    \"preco\": 8,\r\n    \"tipo\": \"Opcional\"\r\n  },\r\n  {\r\n    \"idItem\": \"i13XufAfUwKTEQrCMB\",\r\n    \"nome\": \"Whisky Johnnie Walker Red Label\",\r\n    \"descricao\": \"Whisky Johnnie Walker Red Label\",\r\n    \"preco\": 100,\r\n    \"tipo\": \"Opcional\"\r\n  },\r\n  {\r\n    \"idItem\": \"i159HOe6pk0VQjmbp1\",\r\n    \"nome\": \"Tequila de café em copinhos de chocolate\",\r\n    \"descricao\": \"teste\",\r\n    \"preco\": 16,\r\n    \"tipo\": \"Shot\"\r\n  },\r\n  {\r\n    \"idItem\": \"i160VCLtD6W5bszrgu\",\r\n    \"nome\": \"Fitzgerald\",\r\n    \"descricao\": \"Gin, syrup de açúcar, suco de limão siciliano, angostura bitters e zest\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Drink Alcoólico\"\r\n  },\r\n  {\r\n    \"idItem\": \"i179fSVduKdLX4LscD\",\r\n    \"nome\": \"Margarita\",\r\n    \"descricao\": \"Tequila, Cointreau, suco de limão taiti e borda de sal\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Drink Alcoólico\"\r\n  },\r\n  {\r\n    \"idItem\": \"i17R3SuHESlsNccJ97\",\r\n    \"nome\": \"Tropical Dream\",\r\n    \"descricao\": \"Purê de manga, suco de abacaxi e um toque de leite de coco, batido com gelo e finalizado com uma fatia de carambola.\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Soft Drink\"\r\n  },\r\n  {\r\n    \"idItem\": \"i186d0cVyYeCiEp9nA\",\r\n    \"nome\": \"Ponche para Welcome Drink\",\r\n    \"descricao\": \"    Lillet, hortelã, laranja bahia e tônica com gelo especial (Bloco grande de gelo com Orquídea)\",\r\n    \"preco\": 3500,\r\n    \"tipo\": \"Bar\"\r\n  },\r\n  {\r\n    \"idItem\": \"i18bCgMHD4tVg8kq7W\",\r\n    \"nome\": \"Espumante Freixenet Brut\",\r\n    \"descricao\": \"Espumante Freixenet Brut\",\r\n    \"preco\": 75,\r\n    \"tipo\": \"Opcional\"\r\n  },\r\n  {\r\n    \"idItem\": \"i18KlorWQpANGwgWRx\",\r\n    \"nome\": \"Mini Beer (Licor 43) com espuma:\",\r\n    \"descricao\": \"teste\",\r\n    \"preco\": 12,\r\n    \"tipo\": \"Shot\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1b5RAkHoqqYi5fyF0\",\r\n    \"nome\": \"Bar de Gin Tônica + Box de Especiarias\",\r\n    \"descricao\": \"    TORANJA TONIC – Gin, xarope de grapefruit, tangerina, pimenta rosa e tônica\\n    CLASSIC TONIC – Gin, limão siciliano, zimbro e tônica\",\r\n    \"preco\": 1400,\r\n    \"tipo\": \"Bar\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1cXa725zAv9IHx78s\",\r\n    \"nome\": \"Cucumber Fizz\",\r\n    \"descricao\": \"Gin, pepino, suco de limão siciliano, syrup de hortelã e água tônica\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Drink Alcoólico\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1DyosmH7DwndhoFIW\",\r\n    \"nome\": \"Bar Rústico\",\r\n    \"descricao\": \"    Caipirinha flambada com cachaça envelhecida\\n    Drink de catuaba com frutas vermelhas e espuma de maracujá\\n    Moscow Mule na caneca de cobre com espuma de gengibre\",\r\n    \"preco\": 1600,\r\n    \"tipo\": \"Bar\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1FGlcg0VClkJIzj9B\",\r\n    \"nome\": \"Sunrise Splash\",\r\n    \"descricao\": \"Suco de laranja, xarope de grenadine e água com gás, guarnecido com uma rodela de laranja e cereja.\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Soft Drink\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1FkSAQAdrWTmLZLvp\",\r\n    \"nome\": \"Jagermeister em tubos de ensaio\",\r\n    \"descricao\": \"teste\",\r\n    \"preco\": 10,\r\n    \"tipo\": \"Shot\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1fwXsgtqzxFKubfQ2\",\r\n    \"nome\": \"Cerveja\",\r\n    \"descricao\": \"Cerveja Brahma 330mL\",\r\n    \"preco\": 8,\r\n    \"tipo\": \"Bebida Alcóolica\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1g6y8eLob9QGZJjE1\",\r\n    \"nome\": \"Daiquiri Clássico\",\r\n    \"descricao\": \"Rum branco, suco de limão taiti e xarope de açúcar\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Drink Alcoólico\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1GsP4QdH4eysBOQmJ\",\r\n    \"nome\": \"Lichai Paradise\",\r\n    \"descricao\": \"Água com gás, morangos simples, lichia, suco de limão e hortelã\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Soft Drink\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1Gu66UxwLVetL5MIe\",\r\n    \"nome\": \"Bar Whiskeria – Harmonizações\",\r\n    \"descricao\": \"    Gelos em cubos com folha de ouro, Gelos em Esferas, Zest de casca de limão siciliano e Zest de casca de laranja e defumação.\",\r\n    \"preco\": 3500,\r\n    \"tipo\": \"Bar\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1H6dhQYql8jcb6nNf\",\r\n    \"nome\": \"Negroni Twist\",\r\n    \"descricao\": \"Gin, vermute rosso, Campari e zest de laranja bahia\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Drink Alcoólico\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1IbHK1WRxMHW0dJvv\",\r\n    \"nome\": \"Bar de Café & Expresso Drinks\",\r\n    \"descricao\": \"    Espresso Martini\\n    Irish Coffee\\n    Cold Brew Tônica\",\r\n    \"preco\": 1300,\r\n    \"tipo\": \"Bar\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1IzSyaIL8iVNNqoWp\",\r\n    \"nome\": \"Cerveja Stella Artois\",\r\n    \"descricao\": \"cerveja\",\r\n    \"preco\": 9,\r\n    \"tipo\": \"Opcional\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1m0xFyJn4dQs9MQI6\",\r\n    \"nome\": \"Ginger Zest\",\r\n    \"descricao\": \"Limonada fresca com um toque de xarope de gengibre e um dash de água com gás, decorado com uma fatia fina de gengibre.\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Soft Drink\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1mgi2XUJrJnPgncy3\",\r\n    \"nome\": \"Penicilin\",\r\n    \"descricao\": \"Whisky, suco de limão siciliano, xarope de gengibre e scotch defumado\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Drink Alcoólico\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1O1MrvQQzXMYzG1vN\",\r\n    \"nome\": \"Busca Vida artesanal em mini garrafas\",\r\n    \"descricao\": \"teste\",\r\n    \"preco\": 10,\r\n    \"tipo\": \"Shot\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1OMQI4VbYTzKhgk72\",\r\n    \"nome\": \"Aperol Spritz\",\r\n    \"descricao\": \"Aperol, espumante, água com gás e laranja\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Drink Alcoólico\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1oqVEF45n5GtvNi7H\",\r\n    \"nome\": \"Moscow Mule\",\r\n    \"descricao\": \"Vodka, xarope de gengibre, limão taiti e espuma de gengibre\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Drink Alcoólico\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1PTAuIHUo438hUHvc\",\r\n    \"nome\": \"Spicy Passion\",\r\n    \"descricao\": \"Vodka, maracujá, syrup de pimenta dedo-de-moça e limão taiti\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Drink Alcoólico\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1q7HqwjiekCuR5vH1\",\r\n    \"nome\": \"Bar de Caipirinhas – Vodka, Saquê e Cachaça\",\r\n    \"descricao\": \"    Abacaxi com hortelã, Uva com manjericão, Kiwi com limão\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Bar\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1r2FZ2OSkPaOptUU3\",\r\n    \"nome\": \"Cirque Blue\",\r\n    \"descricao\": \"Curacao blue, suco de blueberry, amora, mix de limão, água com gás e algodão doce ou bala de fruta\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Soft Drink\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1rz62dHMqSDa020XU\",\r\n    \"nome\": \"Classic Tonic\",\r\n    \"descricao\": \"Limão siciliano, xarope e tônica\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Soft Drink\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1sRvOSmpU9BauhJ0c\",\r\n    \"nome\": \"Espumante Salton Brut\",\r\n    \"descricao\": \"Espumante Salton Brut\",\r\n    \"preco\": 40,\r\n    \"tipo\": \"Opcional\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1TE7rXG2YUqWMfkhY\",\r\n    \"nome\": \"Minty Green\",\r\n    \"descricao\": \"Chá verde gelado, suco de limão e xarope de hortelã, servido com folhas de hortelã fresca e uma rodela de limão.\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Soft Drink\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1uZepl4zoJIV2zcne\",\r\n    \"nome\": \"Basil Smash\",\r\n    \"descricao\": \"Gin, suco de limão siciliano, syrup de manjericão e folhas de manjericão\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Drink Alcoólico\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1vCWQEQXxersroTVf\",\r\n    \"nome\": \"Berry Breeze\",\r\n    \"descricao\": \"Suco de cranberry e framboesa, um toque de limão e água tônica, decorado com frutas vermelhas frescas.\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Soft Drink\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1W5W21i4pUZJMZX5V\",\r\n    \"nome\": \"Cerveja Stella Artois ou Heineken 250 ml\",\r\n    \"descricao\": \"teste\",\r\n    \"preco\": 9,\r\n    \"tipo\": \"Opcional\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1Xy5Nn2uuMouEJXqh\",\r\n    \"nome\": \"Pink Lemonade\",\r\n    \"descricao\": \"Mix de limão, limão siciliano, goma ou gás e syrup de morango servido em tacinhas ou limonadas brilhantes\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Soft Drink\"\r\n  },\r\n  {\r\n    \"idItem\": \"i1yAp0eCcDLNPgEv2t\",\r\n    \"nome\": \"Classic Tonic\",\r\n    \"descricao\": \"Gin, limão siciliano e tônica\",\r\n    \"preco\": 15,\r\n    \"tipo\": \"Drink Alcoólico\"\r\n  }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Item",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Item"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "34776802-7b139291-59dd-43e7-8122-6b89b9832bf0"
 		}
 	]
 }

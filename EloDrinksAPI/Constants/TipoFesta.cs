@@ -10,15 +10,15 @@ namespace EloDrinksAPI.Const
         // dicionario para os valores das festas
         public static readonly Dictionary<string, float> TipoFestaValores = new()
         {
-            { "Casamento", 100 },
-            { "Evento Corporativo", 200 },
-            { "Evento de Lançamento", 300 },
-            { "Coquetel", 400 },
-            { "Aniversário", 500 },
-            { "Debutante", 600 },
-            { "Festa Teen", 700 }
+            { "Casamento", 10000 },
+            { "Evento Corporativo", 7000 },
+            { "Evento de Lançamento", 5000 },
+            { "Coquetel", 4000 },
+            { "Aniversário", 5000 },
+            { "Debutante", 8000 },
+            { "Festa Teen", 3000 }
         };
 
-        public const float ValorOutro = 800; // qqr input do cliente
+        public const float ValorOutro = 8000;
     }
 }

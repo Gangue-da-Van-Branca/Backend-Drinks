@@ -9,6 +9,9 @@ using EloDrinksAPI.Const;
 
 namespace EloDrinksAPI.Controllers;
 
+/// <summary>
+/// Gerencia a criação e o ciclo de vida dos orçamentos.
+/// </summary>
 [Route("[controller]")]
 [ApiController]
 public class OrcamentoController : ControllerBase
@@ -20,7 +23,10 @@ public class OrcamentoController : ControllerBase
         _context = context;
     }
 
-    //[Authorize(Roles = "admin")]
+    /// <summary>
+    /// Busca todos os orçamentos.
+    /// </summary>
+    /// <returns>Uma lista de todos os orçamentos no sistema.</returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OrcamentoResponseDto>>> GetOrcamentos()
     {
@@ -40,7 +46,11 @@ public class OrcamentoController : ControllerBase
         }
     }
 
-    //[Authorize(Roles = "admin")]
+    /// <summary>
+    /// Busca um orçamento específico pelo seu ID.
+    /// </summary>
+    /// <param name="id">O ID do orçamento.</param>
+    /// <returns>Os dados detalhados do orçamento.</returns>
     [HttpGet("{id}")]
     public async Task<ActionResult<OrcamentoFrontInputDto>> GetOrcamento(string id)
     {
@@ -63,17 +73,23 @@ public class OrcamentoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Cria um novo orçamento a partir das seleções do frontend.
+    /// </summary>
+    /// <remarks>
+    /// Este endpoint recebe um objeto complexo com todas as escolhas do usuário e cria o orçamento e o pedido correspondente.
+    /// </remarks>
+    /// <param name="dto">Dados completos do orçamento vindos do formulário.</param>
+    /// <returns>Os IDs do orçamento e do pedido criados.</returns>
     [HttpPost("front-create")]
     public async Task<IActionResult> CriarOrcamentoViaFrontend([FromBody] OrcamentoFrontInputDto dto)
     {
         try
         {
-            // Verifica se o usuário já existe
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == dto.InfosContratante.Email);
             if (usuario == null)
                 return BadRequest("Usuário com este e-mail não está cadastrado.");
 
-            // Cria orçamento
             var orcamento = new Orcamento
             {
                 IdOrcamento = "o1" + GerarIdService.GerarIdAlfanumerico(16),
@@ -91,7 +107,6 @@ public class OrcamentoController : ControllerBase
 
             _context.Orcamentos.Add(orcamento);
 
-            // Adiciona drinks
             foreach (var drinkDto in dto.BaseFesta.DrinksSelecionados)
             {
                 var item = await _context.Items.FirstOrDefaultAsync(i => i.Nome == drinkDto.Nome);
@@ -107,7 +122,6 @@ public class OrcamentoController : ControllerBase
                 }
             }
 
-            // Adiciona opcionais
             async Task AddItens(Dictionary<string, int> itens)
             {
                 foreach (var i in itens.Where(i => i.Value > 0))
@@ -123,17 +137,12 @@ public class OrcamentoController : ControllerBase
                             Quantidade = i.Value
                         });
                     }
-                    else
-                    {
-                        Console.WriteLine($"AVISO: Item opcional '{i.Key}' não encontrado.");
-                    }
                 }
             }
 
             await AddItens(dto.Opcionais.Shots);
             await AddItens(dto.Opcionais.Extras);
 
-            // Bares adicionais
             foreach (var bar in dto.Opcionais.BaresAdicionais)
             {
                 var item = await _context.Items.FirstOrDefaultAsync(i => i.Nome == bar);
@@ -147,51 +156,40 @@ public class OrcamentoController : ControllerBase
                         Quantidade = 1
                     });
                 }
-                else
-                {
-                    Console.WriteLine($"AVISO: Bar adicional '{bar}' não encontrado.");
-                }
             }
 
             await _context.SaveChangesAsync();
 
-            // calculo do total
             var itensOrcamento = await _context.OrcamentoHasItems
                 .Include(i => i.ItemIdItemNavigation)
                 .Where(i => i.OrcamentoIdOrcamento == orcamento.IdOrcamento &&
                             i.OrcamentoUsuarioIdUsuario == usuario.IdUsuario)
                 .ToListAsync();
 
-            var nomesDrinksBaseFesta = dto.BaseFesta.DrinksSelecionados.Select(d => d.Nome).ToList(); // lista do q vai er ignorado na conta
+            var nomesDrinksBaseFesta = dto.BaseFesta.DrinksSelecionados.Select(d => d.Nome).ToList();
 
             float totalPedido = itensOrcamento
                 .Where(i => !nomesDrinksBaseFesta.Contains(i.ItemIdItemNavigation.Nome))
                 .Sum(i => i.ItemIdItemNavigation.Preco * i.Quantidade);
 
-            // adicional por tipo de festa
             string tipoFesta = dto.BaseFesta.TipoFesta?.Trim() ?? "";
-            // se achar usa o valor, se n achar é pq é valor de festa custom
-            float valorTipoFesta = TipoFesta.TipoFestaValores.TryGetValue(tipoFesta, out var valor) ? valor: TipoFesta.ValorOutro;
+            float valorTipoFesta = TipoFesta.TipoFestaValores.TryGetValue(tipoFesta, out var valor) ? valor : TipoFesta.ValorOutro;
 
-            // adicional por convidados (85/pessoa)
             int convidados = int.TryParse(dto.InfosContratante.Convidados, out var qtd) ? qtd : 0;
             float valorPorPessoa = convidados * 85f;
 
-            // valor final
             float totalFinal = totalPedido + valorTipoFesta + valorPorPessoa;
 
-            // att orçamento cm valor final
             orcamento.Preco = totalFinal;
             _context.Entry(orcamento).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
-            // Cria o pedido automaticamente
             var pedido = new Pedido
             {
                 IdPedido = "p1" + GerarIdService.GerarIdAlfanumerico(16),
                 OrcamentoIdOrcamento = orcamento.IdOrcamento,
                 OrcamentoUsuarioIdUsuario = usuario.IdUsuario,
-                Total = totalFinal, // valor com as logicas de tipoFesta e n convidados
+                Total = totalFinal,
                 Status = "Pendente",
                 DataCriacao = DateOnly.FromDateTime(DateTime.Now)
             };
@@ -203,26 +201,18 @@ public class OrcamentoController : ControllerBase
         }
         catch (DbUpdateException ex)
         {
-            Console.WriteLine($"DbUpdateException: {ex.Message}");
-            if (ex.InnerException != null)
-            {
-                Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
-            }
             return StatusCode(500, $"Erro ao salvar no banco: {ex.InnerException?.Message ?? ex.Message}");
         }
         catch (FormatException ex)
         {
-            Console.WriteLine($"FormatException: {ex.Message}");
             return BadRequest($"Erro de formatação: {ex.Message}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Exception: {ex.Message}");
             return StatusCode(500, $"Erro ao criar orçamento: {ex.Message}");
         }
     }
 
-    // O método TratarCep permanece o mesmo
     private string TratarCep(string rawCep)
     {
         if (string.IsNullOrWhiteSpace(rawCep))
@@ -236,8 +226,12 @@ public class OrcamentoController : ControllerBase
         return somenteNumeros;
     }
 
-    // PUT: api/Orcamento/5
-    //[Authorize(Roles = "admin")]
+    /// <summary>
+    /// Atualiza um orçamento existente.
+    /// </summary>
+    /// <param name="idOrcamento">ID do orçamento.</param>
+    /// <param name="idUsuario">ID do usuário associado ao orçamento.</param>
+    /// <param name="dto">Dados a serem atualizados.</param>
     [HttpPut("{idOrcamento}/{idUsuario}")]
     public async Task<IActionResult> PutOrcamento(string idOrcamento, string idUsuario, UpdateOrcamentoDto dto)
     {
@@ -260,8 +254,11 @@ public class OrcamentoController : ControllerBase
         }
     }
 
-    // DELETE: api/Orcamento/5
-    //[Authorize(Roles = "admin")]
+    /// <summary>
+    /// Deleta um orçamento.
+    /// </summary>
+    /// <param name="idOrcamento">ID do orçamento a ser deletado.</param>
+    /// <param name="idUsuario">ID do usuário associado ao orçamento.</param>
     [HttpDelete("{idOrcamento}/{idUsuario}")]
     public async Task<IActionResult> DeleteOrcamento(string idOrcamento, string idUsuario)
     {
